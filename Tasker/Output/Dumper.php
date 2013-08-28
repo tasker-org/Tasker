@@ -14,7 +14,7 @@ namespace Tasker\Output;
  */
 class Dumper
 {
-	const MAX_LENGTH = 70;
+	const MAX_LENGTH = 250;
 	const MAX_DEPTH = 50;
 
 
