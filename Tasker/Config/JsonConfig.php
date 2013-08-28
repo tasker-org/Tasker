@@ -7,6 +7,8 @@
  */
 namespace Tasker\Config;
 
+use Tasker\Utils\Arrays;
+
 class JsonConfig extends Config
 {
 
@@ -17,6 +19,6 @@ class JsonConfig extends Config
 	 */
 	public function getConfig()
 	{
-		return $this->objectToArray(json_decode(parent::getConfig()));
+		return Arrays::objectToArray(json_decode(parent::getConfig()));
 	}
 }

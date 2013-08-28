@@ -53,26 +53,4 @@ abstract class Config implements IConfig
 
 		return $this->config;
 	}
-
-	/**
-	 * @param object $obj
-	 * @return array
-	 */
-	protected function objectToArray($obj)
-	{
-		if(is_object($obj)) {
-			$obj = (array) $obj;
-		}
-
-		if(is_array($obj)) {
-			$new = array();
-			foreach($obj as $key => $val) {
-				$new[$key] = $this->objectToArray($val);
-			}
-		} else {
-			$new = $obj;
-		}
-
-		return $new;
-	}
 }
