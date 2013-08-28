@@ -35,10 +35,11 @@ class ClosureTask implements ITask
 	}
 
 	/**
+	 * @param array $config
 	 * @return mixed
 	 */
-	public function run()
+	public function run($config)
 	{
-		return call_user_func_array($this->function, func_get_args());
+		return call_user_func($this->function, $config);
 	}
 }

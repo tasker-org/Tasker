@@ -16,7 +16,8 @@ interface ITask
 	public function getName();
 
 	/**
+	 * @param array $config
 	 * @return mixed
 	 */
-	public function run();
+	public function run($config);
 }
