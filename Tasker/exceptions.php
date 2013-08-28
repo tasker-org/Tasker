@@ -17,3 +17,7 @@ class InvalidArgumentException extends Exception {
 class ErrorException extends Exception {
 
 }
+
+class InfoException extends Exception {
+
+}

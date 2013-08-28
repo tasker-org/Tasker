@@ -8,6 +8,7 @@
 namespace Tasker\Output;
 
 use Tasker\Exception;
+use Tasker\InfoException;
 
 class Writer implements IWriter
 {
@@ -36,11 +37,15 @@ class Writer implements IWriter
 	 */
 	public static function writeException(\Exception $ex)
 	{
-		$message = get_class($ex) . ' in ' . $ex->getFile() . ' on line ' . $ex->getLine() . ' with message: ' . $ex->getMessage();
-		static::writeLn($message, self::ERROR);
+		if($ex instanceof InfoException) {
+			static::writeLn($ex->getMessage(), self::INFO);
+		}else{
+			$message = get_class($ex) . ' in ' . $ex->getFile() . ' on line ' . $ex->getLine() . ' with message: ' . $ex->getMessage();
+			static::writeLn($message, self::ERROR);
 
-		if(!$ex instanceof Exception) {
-			static::writeLn($ex->getTraceAsString(), self::ERROR);
+			if(!$ex instanceof Exception) {
+				static::writeLn($ex->getTraceAsString(), self::ERROR);
+			}
 		}
 	}
 

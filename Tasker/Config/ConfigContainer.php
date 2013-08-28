@@ -7,6 +7,7 @@
  */
 namespace Tasker\Config;
 
+use Tasker\InfoException;
 use Tasker\InvalidStateException;
 
 class ConfigContainer
@@ -40,7 +41,7 @@ class ConfigContainer
 					/** @var IConfig $config */
 					$content = $config->loadConfig()->getConfig();
 					if(!is_array($content)) {
-						throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given');
+						throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
 					}
 					$this->container = array_merge((array) $this->container, $content);
 				}
@@ -53,7 +54,7 @@ class ConfigContainer
 	/**
 	 * @param $name
 	 * @return mixed
-	 * @throws \Tasker\InvalidStateException
+	 * @throws \Tasker\InfoException
 	 */
 	public function getSection($name)
 	{
@@ -63,7 +64,7 @@ class ConfigContainer
 			return $container[$name];
 		}
 
-		throw new InvalidStateException('Configuration for task "' . $name . '" does not exist.');
+		throw new InfoException('Configuration for task "' . $name . '" does not exist.');
 	}
 
 	/**
