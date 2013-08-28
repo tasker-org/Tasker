@@ -19,9 +19,6 @@ class Runner
 	/** @var \Tasker\TasksContainer  */
 	private $tasks;
 
-	/** @var \Tasker\Results  */
-	private $results;
-
 	/**
 	 * @param ConfigContainer $config
 	 * @param TasksContainer $tasks
@@ -30,34 +27,37 @@ class Runner
 	{
 		$this->config = $config;
 		$this->tasks = $tasks;
-		$this->results = new Results();
 	}
 
 	/**
-	 * @return Results
+	 * @param ResultSet $set
+	 * @return ResultSet
 	 */
-	public function run()
+	public function run(ResultSet $set)
 	{
 		if(count($tasks = $this->tasks->getTasksName())) {
 			foreach ($tasks as $taskName) {
-				$this->results->addResult($this->runTask($taskName));
+				$set->addResult('Running task "' . $taskName . '"', Writer::INFO);
+				$result = $this->runTask($taskName);
+				if($result !== null) {
+					$set->addResult($result);
+				}
+
+				$set->addResult('Task '. $taskName . ' completed!', Writer::INFO);
 			}
 		}
 
-		return $this->results;
+		return $set;
 	}
 
 	/**
 	 * @param $name
-	 * @return $this
+	 * @return \Exception|string
 	 */
 	public function runTask($name)
 	{
 		try {
 			$result = $this->tasks->getTask($name)->run($this->config->getSection($name));
-			if($result === null) {
-				$result = 'Task "' . $name . '" completed';
-			}
 		}catch (\Exception $ex) {
 			$result = $ex;
 		}

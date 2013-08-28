@@ -13,14 +13,21 @@ use Tasker\Config\ConfigContainer;
 class Tasker
 {
 
+	/** @var bool  */
+	private $verboseMode;
+
 	/** @var ConfigContainer  */
 	private $configContainer;
 
 	/** @var TasksContainer */
 	private $taskContainer;
 
-	function __construct()
+	/**
+	 * @param bool $verbose
+	 */
+	function __construct($verbose = true)
 	{
+		$this->verboseMode = $verbose;
 		$this->taskContainer = new TasksContainer;
 		$this->configContainer = new ConfigContainer;
 	}
@@ -65,19 +72,39 @@ class Tasker
 	}
 
 	/**
-	 * @param null $task
-	 * @return Results
+	 * @return ResultSet
 	 */
-	public function run($task = null)
+	public function run()
 	{
-		$runner = new Runner($this->configContainer, $this->taskContainer);
-		if($task !== null) {
-			$result = new Results(array($runner->runTask($task)));
-		}else{
-			$result = $runner->run();
-		}
+		$runner = $this->createRunner();
+		return $runner->run($this->createResultSet());
+	}
 
-		return $result;
+	/**
+	 * @param $name
+	 * @return \Exception|string
+	 */
+	public function runTask($name)
+	{
+		$runner = $this->createRunner();
+		return $runner->runTask($name);
+	}
+
+	/**
+	 * @return Runner
+	 */
+	protected function createRunner()
+	{
+		return new Runner($this->configContainer, $this->taskContainer);
+	}
+
+	/**
+	 * @return ResultSet
+	 */
+	protected function createResultSet()
+	{
+		$results = new ResultSet;
+		return $results->setVerboseMode($this->verboseMode);
 	}
 
 	/**
