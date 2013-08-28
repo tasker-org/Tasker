@@ -10,7 +10,7 @@ namespace Tasker;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
 
-class ResultSet
+class ResultSet implements IResultSet
 {
 
 	/** @var bool  */
@@ -36,7 +36,7 @@ class ResultSet
 	}
 
 	/**
-	 * @param boolean $verbose
+	 * @param $verbose
 	 * @return $this
 	 */
 	public function setVerboseMode($verbose)
@@ -58,7 +58,7 @@ class ResultSet
 	 * @param $type
 	 * @return $this
 	 */
-	public function addResult($result, $type = Writer::SUCCESS)
+	public function addResult($result, $type = IWriter::SUCCESS)
 	{
 		$result = array($result, $type);
 		if($this->verbose === true) {
@@ -76,12 +76,12 @@ class ResultSet
 	{
 		if($this->verbose === false) {
 			if(!count($this->results)) {
-				$this->results[] = array('NO TASKS EXECUTED', Writer::INFO);
+				$this->results[] = array('NO TASKS EXECUTED', IWriter::INFO);
 			}
 
 			foreach ($this->results as $result) {
 				if(!is_array($result)) {
-					$result = array($result, Writer::SUCCESS);
+					$result = array($result, IWriter::SUCCESS);
 				}
 				$this->printResult($result);
 			}

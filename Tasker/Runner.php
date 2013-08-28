@@ -30,10 +30,10 @@ class Runner
 	}
 
 	/**
-	 * @param ResultSet $set
-	 * @return ResultSet
+	 * @param IResultSet $set
+	 * @return IResultSet
 	 */
-	public function run(ResultSet $set)
+	public function run(IResultSet $set)
 	{
 		if(count($tasks = $this->tasks->getTasksName())) {
 			foreach ($tasks as $taskName) {
