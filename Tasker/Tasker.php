@@ -10,6 +10,7 @@ namespace Tasker;
 use Tasker\Config\JsonConfig;
 use Tasker\Config\ConfigContainer;
 use Tasker\Tasks\ClosureTask;
+use Tasker\Tasks\ITask;
 
 class Tasker
 {
