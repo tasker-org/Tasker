@@ -34,7 +34,8 @@ class Writer implements IWriter
 	 */
 	public static function writeException(\Exception $ex)
 	{
-		static::writeLn($ex->getMessage(), self::ERROR);
+		static::writeLn(get_class($ex) . ': ' . $ex->getMessage(), self::ERROR);
+		static::writeLn($ex->getTraceAsString(), self::ERROR);
 	}
 
 	/**
