@@ -5,7 +5,7 @@
  * @author: Jiří Šifalda <sifalda.jiri@gmail.com>
  * @date: 28.08.13
  */
-namespace Tasker;
+namespace Tasker\Tasks;
 
 interface ITaskService
 {

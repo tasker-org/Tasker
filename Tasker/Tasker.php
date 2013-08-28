@@ -11,6 +11,7 @@ use Tasker\Config\JsonConfig;
 use Tasker\Config\ConfigContainer;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
+use Tasker\Tasks\ITaskService;
 use Tasker\InvalidArgumentException;
 
 class Tasker
