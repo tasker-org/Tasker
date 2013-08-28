@@ -8,7 +8,7 @@
 namespace Tasker;
 
 use Tasker\Config\ConfigContainer;
-use Tasker\Config\IConfig;
+use Tasker\Output\Writer;
 
 class Runner
 {
