@@ -18,5 +18,5 @@ interface ISettings
 	/**
 	 * @return bool
 	 */
-	public function getVerboseMode();
+	public function isVerboseMode();
 }

@@ -41,6 +41,10 @@ class Settings implements ISettings
 		return (string) $this->get('rootPath', getcwd());
 	}
 
+	/**
+	 * @param $verbose
+	 * @return $this
+	 */
 	public function setVerboseMode($verbose)
 	{
 		return $this->set('verboseMode', (bool) $verbose);
@@ -49,9 +53,9 @@ class Settings implements ISettings
 	/**
 	 * @return bool
 	 */
-	public function getVerboseMode()
+	public function isVerboseMode()
 	{
-		return (bool) $this->get('verboseMode', true);
+		return (bool) $this->get('verboseMode', PHP_SAPI === 'cli');
 	}
 
 	/**
@@ -70,7 +74,7 @@ class Settings implements ISettings
 	 * @param $default
 	 * @return mixed
 	 */
-	private function get($name, $default)
+	private function get($name, $default = null)
 	{
 		return (isset($this->config[$name])) ? $this->config[$name] : $default;
 	}

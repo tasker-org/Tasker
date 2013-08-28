@@ -125,7 +125,7 @@ class Tasker
 	protected function createResultSet()
 	{
 		$results = new ResultSet;
-		return $results->setVerboseMode($this->settings->getVerboseMode());
+		return $results->setVerboseMode($this->settings->isVerboseMode());
 	}
 
 	/**
