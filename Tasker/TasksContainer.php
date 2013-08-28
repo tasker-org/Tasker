@@ -7,6 +7,8 @@
  */
 namespace Tasker;
 
+use Tasker\Tasks\ITask;
+
 class TasksContainer
 {
 
