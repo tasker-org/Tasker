@@ -54,6 +54,25 @@ class ResultSet implements IResultSet
 	}
 
 	/**
+	 * @param array $results
+	 * @return $this
+	 */
+	public function mergeResults(array $results)
+	{
+		if(count($results)) {
+			foreach ($results as $type => $result) {
+				if(!is_string($type)) {
+					$type = IWriter::SUCCESS;
+				}
+
+				$this->addResult($result, $type);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * @param $result
 	 * @param $type
 	 * @return $this

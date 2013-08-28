@@ -43,7 +43,11 @@ class Runner
 
 				$result = $this->runTask($taskName);
 				if($result !== null) {
-					$set->addResult($result);
+					if(is_array($result)) {
+						$set->mergeResults($result);
+					}else{
+						$set->addResult($result);
+					}
 				}
 
 				$set->addResult('Task '. $taskName . ' completed!', Writer::INFO);

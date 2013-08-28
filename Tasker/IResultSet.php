@@ -24,6 +24,12 @@ interface IResultSet
 	public function getResults();
 
 	/**
+	 * @param array $results
+	 * @return $this
+	 */
+	public function mergeResults(array $results);
+
+	/**
 	 * @param $result
 	 * @param $type
 	 * @return $this
