@@ -17,6 +17,14 @@ class Results
 	private $results = array();
 
 	/**
+	 * @param array $results
+	 */
+	function __construct(array $results = array())
+	{
+		$this->results = $results;
+	}
+
+	/**
 	 * @param $result
 	 * @param $type
 	 * @return $this

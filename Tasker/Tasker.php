@@ -72,7 +72,7 @@ class Tasker
 	{
 		$runner = new Runner($this->configContainer, $this->taskContainer);
 		if($task !== null) {
-			$result = new Results($runner->runTask($task));
+			$result = new Results(array($runner->runTask($task)));
 		}else{
 			$result = $runner->run();
 		}
