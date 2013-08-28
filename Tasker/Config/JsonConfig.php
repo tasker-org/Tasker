@@ -10,6 +10,8 @@ namespace Tasker\Config;
 class JsonConfig extends Config
 {
 
+	const EXTENSION = 'json';
+
 	/**
 	 * @return array
 	 */
@@ -17,20 +19,4 @@ class JsonConfig extends Config
 	{
 		return $this->objectToArray(json_decode(parent::getConfig()));
 	}
-
-	/**
-	 * @param string $name
-	 * @return mixed
-	 * @throws \InvalidArgumentException
-	 */
-	public function getConfigSection($name)
-	{
-		$config = $this->getConfig();
-		if(isset($config->$name)) {
-			return $config->$name;
-		}
-
-		throw new \InvalidArgumentException;
-	}
-
 }

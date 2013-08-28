@@ -7,6 +7,9 @@
  */
 namespace Tasker\Config;
 
+use Tasker\InvalidArgumentException;
+use Tasker\InvalidStateException;
+
 abstract class Config implements IConfig
 {
 
@@ -18,14 +21,14 @@ abstract class Config implements IConfig
 
 	/**
 	 * @param $configPath
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	function __construct($configPath)
 	{
 		$this->configPath = (string) $configPath;
 
 		if(!file_exists($this->configPath)) {
-			throw new \InvalidArgumentException;
+			throw new InvalidArgumentException('Given path "' . $this->configPath . '" does not exist.');
 		}
 	}
 
@@ -40,12 +43,12 @@ abstract class Config implements IConfig
 
 	/**
 	 * @return mixed
-	 * @throws \InvalidArgumentException
+	 * @throws \Tasker\InvalidStateException
 	 */
 	public function getConfig()
 	{
 		if($this->config === null) {
-			throw new \InvalidArgumentException('Please call method loadConfig first');
+			throw new InvalidStateException('Please call method loadConfig first');
 		}
 
 		return $this->config;

@@ -9,8 +9,9 @@ namespace Tasker;
 
 use Tasker\Config\JsonConfig;
 use Tasker\Config\ConfigContainer;
-use Tasker\Tasks\ClosureTask;
+use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
+use Tasker\InvalidArgumentException;
 
 class Tasker
 {
@@ -37,16 +38,16 @@ class Tasker
 	/**
 	 * @param $path
 	 * @return $this
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function addConfig($path)
 	{
 		if(!file_exists($path)) {
-			throw new \InvalidArgumentException;
+			throw new InvalidArgumentException('Given path "' . $path . '" does not exist.');
 		}
 
 		switch ($this->getFileExtension($path)) {
-			case 'json':
+			case JsonConfig::EXTENSION:
 				$this->configContainer->addConfig(new JsonConfig($path));
 			break;
 		}
@@ -58,16 +59,20 @@ class Tasker
 	 * @param $task
 	 * @param null $name
 	 * @return $this
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function registerTask($task, $name = null)
 	{
+
 		if($task instanceof ITask){
 			$this->taskContainer->registerTask($task);
-		}elseif($task instanceof \Closure){
-			$this->taskContainer->registerTask(new ClosureTask($name, $task));
+		}elseif(is_callable($task)){
+			if($name === null) {
+				throw new InvalidArgumentException('Please set task name');
+			}
+			$this->taskContainer->registerTask(new CallableTask($name, $task));
 		}else{
-			throw new \InvalidArgumentException;
+			throw new InvalidArgumentException('Invalid task format given');
 		}
 
 		return $this;

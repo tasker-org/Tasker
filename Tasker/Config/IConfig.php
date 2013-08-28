@@ -22,10 +22,4 @@ interface IConfig
 	 */
 	public function getConfig();
 
-	/**
-	 * @param string $name
-	 * @return mixed
-	 */
-	public function getConfigSection($name);
-
 }

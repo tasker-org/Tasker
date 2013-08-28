@@ -19,5 +19,5 @@ interface ITask
 	 * @param array $config
 	 * @return mixed
 	 */
-	public function run($config);
+	public function run(array $config);
 }
