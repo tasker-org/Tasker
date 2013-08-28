@@ -8,6 +8,8 @@
 namespace Tasker;
 
 use Tasker\Tasks\ITask;
+use Tasker\InvalidStateException;
+use Tasker\InvalidArgumentException;
 
 class TasksContainer
 {
@@ -17,12 +19,12 @@ class TasksContainer
 
 	/**
 	 * @param ITask $task
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidStateException
 	 */
 	public function registerTask(ITask $task)
 	{
 		if(isset($this->tasks[$task->getName()])) {
-			throw new \InvalidArgumentException;
+			throw new InvalidStateException('Task with same name "' . $task->getName() . ' exist yet.');
 		}
 
 		$this->tasks[$task->getName()] = $task;
@@ -31,8 +33,8 @@ class TasksContainer
 	/**
 	 * @param $name
 	 * @param bool $need
-	 * @return ITask|null
-	 * @throws \InvalidArgumentException
+	 * @return mixed
+	 * @throws InvalidArgumentException
 	 */
 	public function getTask($name, $need = true)
 	{
@@ -41,7 +43,7 @@ class TasksContainer
 		}
 
 		if($need === true) {
-			throw new \InvalidArgumentException;
+			throw new InvalidArgumentException('Task with name "' . $name . '" does not exist.');
 		}
 	}
 
