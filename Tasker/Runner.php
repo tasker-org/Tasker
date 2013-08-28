@@ -37,7 +37,10 @@ class Runner
 	{
 		if(count($tasks = $this->tasks->getTasksName())) {
 			foreach ($tasks as $taskName) {
-				$set->addResult('Running task "' . $taskName . '"', Writer::INFO);
+				if($set->isVerboseMode()) {
+					$set->addResult('Running task "' . $taskName . '"', Writer::INFO);
+				}
+
 				$result = $this->runTask($taskName);
 				if($result !== null) {
 					$set->addResult($result);

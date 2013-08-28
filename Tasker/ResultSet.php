@@ -46,6 +46,14 @@ class ResultSet
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function isVerboseMode()
+	{
+		return $this->verbose;
+	}
+
+	/**
 	 * @param $result
 	 * @param $type
 	 * @return $this
