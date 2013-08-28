@@ -19,7 +19,7 @@ class Writer implements IWriter
 	 */
 	public static function write($message, $type = self::SUCCESS)
 	{
-		echo Colors::getColored($message, $type);
+		echo Colors::getColored(Dumper::toLine($message), $type);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Writer implements IWriter
 	public static function dump()
 	{
 		foreach(func_get_args() as $var) {
-			var_export($var);
+			Dumper::toLine($var);
 		}
 
 		exit;
