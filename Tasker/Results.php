@@ -7,6 +7,9 @@
  */
 namespace Tasker;
 
+use Tasker\Output\IWriter;
+use Tasker\Output\Writer;
+
 class Results
 {
 
@@ -15,11 +18,12 @@ class Results
 
 	/**
 	 * @param $result
+	 * @param $type
 	 * @return $this
 	 */
-	public function addResult($result)
+	public function addResult($result, $type = Writer::SUCCESS)
 	{
-		$this->results[] = $result;
+		$this->results[] = array($result, $type);
 		return $this;
 	}
 
@@ -28,12 +32,17 @@ class Results
 	 */
 	public function dump()
 	{
-		if(count($this->results)) {
-			foreach ($this->results as $result) {
-				echo $result . PHP_EOL;
+		if(!count($this->results)) {
+			$this->results[] = array('NO TASKS EXECUTED', Writer::SUCCESS);
+		}
+
+		foreach ($this->results as $result) {
+			list($message, $type) = $result;
+			if($message instanceof \Exception) {
+				Writer::writeException($message);
+			}else{
+				Writer::writeLn($message, $type);
 			}
-		}else{
-			echo 'NO TASKS EXECUTED';
 		}
 	}
 }

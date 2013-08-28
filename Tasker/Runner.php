@@ -53,10 +53,15 @@ class Runner
 	 */
 	public function runTask($name)
 	{
-		$result = $this->tasks->getTask($name)->run($this->config->getSection($name));
-		if($result === null) {
-			$result = 'Task "' . $name . '" completed';
+		try {
+			$result = $this->tasks->getTask($name)->run($this->config->getSection($name));
+			if($result === null) {
+				$result = 'Task "' . $name . '" completed';
+			}
+		}catch (\Exception $ex) {
+			$result = $ex;
 		}
+
 		return $result;
 	}
 }
