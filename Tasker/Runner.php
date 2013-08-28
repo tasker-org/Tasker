@@ -60,7 +60,8 @@ class Runner
 	public function runTask($name)
 	{
 		try {
-			$result = $this->tasks->getTask($name)->run($this->config->getSection($name));
+			$task = $this->tasks->getTask($name);
+			$result = $task->run($this->config->getSection($task->getSectionName()));
 		}catch (\Exception $ex) {
 			$result = $ex;
 		}

@@ -33,7 +33,7 @@ class TasksContainer
 	/**
 	 * @param $name
 	 * @param bool $need
-	 * @return mixed
+	 * @return ITask
 	 * @throws InvalidArgumentException
 	 */
 	public function getTask($name, $need = true)
