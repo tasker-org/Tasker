@@ -65,17 +65,21 @@ class Tasker
 	public function registerTask($task, $name = null, $configSection = null)
 	{
 
-		if($task instanceof ITask){
-			$this->taskContainer->registerTask($task);
+		if(!$task instanceof ITask && $name === null) {
+			throw new InvalidArgumentException('Please set task name');
+		}
+
+		if($task instanceof ITaskService) {
+			$task = new CallableTask($name, array($task, 'run'), $configSection);
 		}elseif(is_callable($task)){
-			if($name === null) {
-				throw new InvalidArgumentException('Please set task name');
-			}
-			$this->taskContainer->registerTask(new CallableTask($name, $task, $configSection));
-		}else{
+			$task = new CallableTask($name, $task, $configSection);
+		}
+
+		if(!$task instanceof ITask) {
 			throw new InvalidArgumentException('Invalid task format given');
 		}
 
+		$this->taskContainer->registerTask($task);
 		return $this;
 	}
 
