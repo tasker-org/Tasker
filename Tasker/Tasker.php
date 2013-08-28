@@ -7,8 +7,11 @@
  */
 namespace Tasker;
 
+use Tasker\Config\ISettings;
 use Tasker\Config\JsonConfig;
 use Tasker\Config\ConfigContainer;
+use Tasker\Config\Settings;
+use Tasker\Setters\IRootPathSetter;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
@@ -17,8 +20,8 @@ use Tasker\InvalidArgumentException;
 class Tasker
 {
 
-	/** @var bool  */
-	private $verboseMode;
+	/** @var \Tasker\Config\ISettings  */
+	private $settings;
 
 	/** @var ConfigContainer  */
 	private $configContainer;
@@ -27,11 +30,15 @@ class Tasker
 	private $taskContainer;
 
 	/**
-	 * @param bool $verbose
+	 * @param ISettings $settings
 	 */
-	function __construct($verbose = true)
+	function __construct(ISettings $settings = null)
 	{
-		$this->verboseMode = $verbose;
+		if($settings === null) {
+			$settings = new Settings;
+		}
+
+		$this->settings = $settings;
 		$this->taskContainer = new TasksContainer;
 		$this->configContainer = new ConfigContainer;
 	}
@@ -71,6 +78,7 @@ class Tasker
 		}
 
 		if($task instanceof ITaskService) {
+			$this->callSetters($task);
 			$task = new CallableTask($name, array($task, 'run'), $configSection);
 		}elseif(is_callable($task)){
 			$task = new CallableTask($name, $task, $configSection);
@@ -117,7 +125,7 @@ class Tasker
 	protected function createResultSet()
 	{
 		$results = new ResultSet;
-		return $results->setVerboseMode($this->verboseMode);
+		return $results->setVerboseMode($this->settings->getVerboseMode());
 	}
 
 	/**
@@ -129,4 +137,13 @@ class Tasker
 		return pathinfo($path, PATHINFO_EXTENSION);
 	}
 
+	/**
+	 * @param ITaskService $task
+	 */
+	protected function callSetters(ITaskService &$task)
+	{
+		if($task instanceof IRootPathSetter) {
+			$task->setRootPath($this->settings->getRootPath());
+		}
+	}
 }
