@@ -18,19 +18,28 @@ class CallableTask implements ITask
 	/** @var callable  */
 	private $callable;
 
+	/** @var  string */
+	private $section;
+
 	/**
 	 * @param $name
 	 * @param $callable
+	 * @param null $section
 	 * @throws InvalidArgumentException
 	 */
-	function __construct($name, $callable)
+	function __construct($name, $callable, $section = null)
 	{
 		if(!is_callable($callable)) {
 			throw new InvalidArgumentException('Function must be callable');
 		}
 
 		$this->callable = $callable;
-		$this->name = $name;
+		$this->name = (string) $name;
+
+		if($section === null) {
+			$section = $this->name;
+		}
+		$this->section = $section;
 	}
 
 
@@ -49,5 +58,13 @@ class CallableTask implements ITask
 	public function run(array $config)
 	{
 		return call_user_func($this->callable, $config);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSectionName()
+	{
+		return $this->section;
 	}
 }

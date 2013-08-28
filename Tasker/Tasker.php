@@ -58,10 +58,11 @@ class Tasker
 	/**
 	 * @param $task
 	 * @param null $name
+	 * @param null $configSection
 	 * @return $this
 	 * @throws InvalidArgumentException
 	 */
-	public function registerTask($task, $name = null)
+	public function registerTask($task, $name = null, $configSection = null)
 	{
 
 		if($task instanceof ITask){
@@ -70,7 +71,7 @@ class Tasker
 			if($name === null) {
 				throw new InvalidArgumentException('Please set task name');
 			}
-			$this->taskContainer->registerTask(new CallableTask($name, $task));
+			$this->taskContainer->registerTask(new CallableTask($name, $task, $configSection));
 		}else{
 			throw new InvalidArgumentException('Invalid task format given');
 		}

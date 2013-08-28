@@ -16,6 +16,11 @@ interface ITask
 	public function getName();
 
 	/**
+	 * @return string
+	 */
+	public function getSectionName();
+
+	/**
 	 * @param array $config
 	 * @return mixed
 	 */
