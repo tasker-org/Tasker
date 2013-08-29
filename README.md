@@ -5,8 +5,7 @@ Tasks runner written in php
 
 ##Minimal configuration
 **Example of usage Tasker with default tasks**
-```sh
-#!/usr/bin/env php
+```php
 
 <?php
 
