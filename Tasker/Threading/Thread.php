@@ -7,6 +7,8 @@
  */
 namespace Tasker\Threading;
 
+use Exception;
+
 /**
  * Implements threading in PHP
  *
