@@ -7,6 +7,8 @@
  */
 namespace Tasker\Config;
 
+use Tasker\InvalidArgumentException;
+
 class Settings implements ISettings
 {
 
@@ -15,6 +17,9 @@ class Settings implements ISettings
 
 	/** @var  bool */
 	private $verboseMode;
+	
+	/** @var int  */
+	private $threadsLimit = 10;
 
 	/**
 	 * @param null $root
@@ -68,5 +73,28 @@ class Settings implements ISettings
 		}
 
 		return PHP_SAPI === 'cli';
+	}
+
+	/**
+	 * @param $threadsLimit
+	 * @return $this
+	 * @throws \Tasker\InvalidArgumentException
+	 */
+	public function setThreadsLimit($threadsLimit)
+	{
+		if($threadsLimit > 10000) {
+			throw new InvalidArgumentException('Treads limit is too high. Set limit smaller then 10000');
+		}
+
+		$this->threadsLimit = (int) $threadsLimit;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getThreadsLimit()
+	{
+		return $this->threadsLimit;
 	}
 }
