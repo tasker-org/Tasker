@@ -10,6 +10,7 @@ namespace Tasker;
 use Tasker\Config\ConfigContainer;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
+use Tasker\Threading\Memory;
 use Tasker\Threading\Thread;
 
 class Runner
@@ -23,9 +24,6 @@ class Runner
 
 	/** @var array|Thread[] */
 	private $threads = array();
-
-	/** @var  string */
-	private $sharedMemory;
 
 	/**
 	 * @param ConfigContainer $config
@@ -45,10 +43,7 @@ class Runner
 	{
 		$tasks = $this->tasks->getTasksName();
 		if(count($tasks)) {
-			$sem_id = sem_get(1);
-			sem_acquire($sem_id);
-			$this->sharedMemory = shm_attach(2, 5500);
-
+			Memory::init();
 
 			foreach ($tasks as $taskName) {
 				if($set->isVerboseMode()) {
@@ -56,11 +51,13 @@ class Runner
 				}
 
 				$thread = new Thread(array($this, 'runTask'));
-				$thread->start($taskName, $this->sharedMemory);
+				$thread->start($taskName);
 				$this->threads[$taskName] = $thread;
 			}
 
 			$this->cleanThreads($set);
+
+			Memory::release();
 		}
 
 		return $set;
@@ -68,9 +65,8 @@ class Runner
 
 	/**
 	 * @param $name
-	 * @param $memoryId
 	 */
-	public function runTask($name, $memoryId)
+	public function runTask($name)
 	{
 		try {
 			$task = $this->tasks->getTask($name);
@@ -79,28 +75,31 @@ class Runner
 			$result = array(IWriter::ERROR, $ex->getMessage());
 		}
 
-		shm_put_var($memoryId, $name, $result);
+		Memory::set($name, $result);
 	}
 
+	/**
+	 * @param IResultSet $set
+	 */
 	private function cleanThreads(IResultSet $set)
 	{
 		while( !empty($this->threads) ) {
 			foreach($this->threads as $name => $thread ) {
 				if(!$thread->isAlive()) {
 					unset($this->threads[$name]);
-					$set->addResult('Task '. $name . ' completed!', Writer::INFO);
-					list($type, $result) = (array) shm_get_var($this->sharedMemory, $name);
+					list($type, $result) = (array) Memory::get($name);
 					if($result !== null) {
+						$set->addResult('Task '. $name . ' completed with result:', Writer::INFO);
 						if(is_array($result)) {
 							$set->mergeResults($result);
 						}else{
-
 							$set->addResult($result, $type);
 						}
+					}else{
+						$set->addResult('Task '. $name . ' completed!', Writer::INFO);
 					}
 				}
 			}
-
 
 			// let the CPU do its work
 			sleep(1);
