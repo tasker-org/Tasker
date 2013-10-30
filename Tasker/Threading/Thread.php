@@ -47,26 +47,6 @@ class Thread {
 	private $pid;
 
 	/**
-	 * checks if threading is supported by the current
-	 * PHP configuration
-	 *
-	 * @return boolean
-	 */
-	public static function available() {
-		$required_functions = array(
-			'pcntl_fork',
-		);
-
-		foreach( $required_functions as $function ) {
-			if ( !function_exists( $function ) ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * class constructor - you can pass
 	 * the callback function as an argument
 	 *
