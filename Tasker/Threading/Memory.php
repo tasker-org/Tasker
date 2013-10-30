@@ -122,7 +122,7 @@ class Memory extends Object
 	/**
 	 * @return void
 	 */
-	public static function release()
+	public static function clear()
 	{
 		static::releaseSem();
 		static::removeShm();

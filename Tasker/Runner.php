@@ -60,7 +60,7 @@ class Runner
 				sleep(1);
 			}
 
-			Memory::release();
+			Memory::clear();
 		}
 
 		return $set;
