@@ -40,10 +40,12 @@ class ConfigContainer
 				foreach($this->configs as $config) {
 					/** @var IConfig $config */
 					$content = $config->loadConfig()->getConfig();
-					if(!is_array($content)) {
+					if(is_array($content)) {
+						$this->container = array_merge((array) $this->container, $content);
+					}else if($content !== null && !is_array($content)) {
 						throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
 					}
-					$this->container = array_merge((array) $this->container, $content);
+
 				}
 			}
 		}
