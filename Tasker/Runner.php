@@ -45,17 +45,20 @@ class Runner
 		if(count($tasks)) {
 			Memory::init();
 
-			foreach ($tasks as $taskName) {
-				if($set->isVerboseMode()) {
-					$set->addResult('Running task "' . $taskName . '"', Writer::INFO);
+			$this->processTasks($tasks, $set);
+
+			while(!empty($this->threads)) {
+				foreach($this->threads as $name => $thread) {
+					if(!$thread->isAlive()) {
+						unset($this->threads[$name]);
+						$this->processTaskResult($name, $set);
+						$this->processTasks($tasks, $set);
+					}
 				}
 
-				$thread = new Thread(array($this, 'runTask'));
-				$thread->start($taskName);
-				$this->threads[$taskName] = $thread;
+				// let the CPU do its work
+				sleep(1);
 			}
-
-			$this->cleanThreads($set);
 
 			Memory::release();
 		}
@@ -80,24 +83,6 @@ class Runner
 
 	/**
 	 * @param IResultSet $set
-	 */
-	private function cleanThreads(IResultSet $set)
-	{
-		while(!empty($this->threads)) {
-			foreach($this->threads as $name => $thread ) {
-				if(!$thread->isAlive()) {
-					unset($this->threads[$name]);
-					$this->processTaskResult($name, $set);
-				}
-			}
-
-			// let the CPU do its work
-			sleep(1);
-		}
-	}
-
-	/**
-	 * @param IResultSet $set
 	 * @param $taskName
 	 */
 	private function processTaskResult($taskName, IResultSet $set)
@@ -113,5 +98,39 @@ class Runner
 		}else{
 			$set->addResult('Task "'. $taskName . '" completed!', Writer::SUCCESS);
 		}
+	}
+
+	/**
+	 * @param array $tasks
+	 * @param IResultSet $set
+	 * @return $this
+	 */
+	protected function processTasks(array &$tasks, IResultSet $set)
+	{
+		foreach ($tasks as $i => $taskName) {
+			if(count($this->threads) < 3) {
+				$this->createThread($taskName, $set);
+				unset($tasks[$i]);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * @param $taskName
+	 * @param IResultSet $set
+	 * @return $this
+	 */
+	protected function createThread($taskName, IResultSet $set)
+	{
+		if($set->isVerboseMode()) {
+			$set->addResult('Running task "' . $taskName . '"', Writer::INFO);
+		}
+
+		$thread = new Thread(array($this, 'runTask'));
+		$thread->start($taskName);
+		$this->threads[$taskName] = $thread;
+		return $thread;
 	}
 }
