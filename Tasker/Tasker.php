@@ -77,7 +77,7 @@ class Tasker
 			throw new InvalidArgumentException('Please set task name');
 		}
 
-		if($task instanceof ITaskService) {
+		if(!$task instanceof ITask && $task instanceof ITaskService) {
 			$this->callSetters($task);
 			$task = new CallableTask($name, array($task, 'run'), $configSection);
 		}elseif(is_callable($task)){
