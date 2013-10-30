@@ -83,26 +83,35 @@ class Runner
 	 */
 	private function cleanThreads(IResultSet $set)
 	{
-		while( !empty($this->threads) ) {
+		while(!empty($this->threads)) {
 			foreach($this->threads as $name => $thread ) {
 				if(!$thread->isAlive()) {
 					unset($this->threads[$name]);
-					list($type, $result) = (array) Memory::get($name);
-					if($result !== null) {
-						$set->addResult('Task '. $name . ' completed with result:', Writer::INFO);
-						if(is_array($result)) {
-							$set->mergeResults($result);
-						}else{
-							$set->addResult($result, $type);
-						}
-					}else{
-						$set->addResult('Task '. $name . ' completed!', Writer::INFO);
-					}
+					$this->processTaskResult($name, $set);
 				}
 			}
 
 			// let the CPU do its work
 			sleep(1);
+		}
+	}
+
+	/**
+	 * @param IResultSet $set
+	 * @param $taskName
+	 */
+	private function processTaskResult($taskName, IResultSet $set)
+	{
+		list($type, $result) = (array) Memory::get($taskName);
+		if($result !== null) {
+			$set->addResult('Task "'. $taskName . '" completed with result:', Writer::INFO);
+			if(is_array($result)) {
+				$set->mergeResults($result);
+			}else{
+				$set->addResult($result, $type);
+			}
+		}else{
+			$set->addResult('Task "'. $taskName . '" completed!', Writer::SUCCESS);
 		}
 	}
 }
