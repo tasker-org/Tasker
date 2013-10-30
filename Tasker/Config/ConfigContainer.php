@@ -16,7 +16,7 @@ class ConfigContainer
 	/** @var  array */
 	private $container;
 
-	/** @var array  */
+	/** @var array|IConfig[]  */
 	private $configs = array();
 
 	/**
@@ -38,7 +38,6 @@ class ConfigContainer
 		if($this->container === null) {
 			if(count($this->configs)) {
 				foreach($this->configs as $config) {
-					/** @var IConfig $config */
 					$content = $config->loadConfig()->getConfig();
 					if(is_array($content)) {
 						$this->container = array_merge((array) $this->container, $content);
@@ -70,7 +69,7 @@ class ConfigContainer
 	}
 
 	/**
-	 * @return array
+	 * @return array|IConfig[]
 	 */
 	public function getConfigs()
 	{
