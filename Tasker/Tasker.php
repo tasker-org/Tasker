@@ -88,7 +88,7 @@ class Tasker
 			throw new InvalidArgumentException('Invalid task format given');
 		}
 
-		$this->taskContainer->registerTask($task);
+		$this->taskContainer->registerTask($task, $name);
 		return $this;
 	}
 
