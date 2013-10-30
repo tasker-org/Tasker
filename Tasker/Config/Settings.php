@@ -10,8 +10,11 @@ namespace Tasker\Config;
 class Settings implements ISettings
 {
 
-	/** @var array  */
-	private $config = array();
+	/** @var  string */
+	private $rootPath;
+
+	/** @var  bool */
+	private $verboseMode;
 
 	/**
 	 * @param null $root
@@ -29,16 +32,20 @@ class Settings implements ISettings
 	 */
 	public function setRootPath($root)
 	{
-		return $this->set('rootPath', (string) $root);
+		$this->rootPath = (string) $root;
+		return $this;
 	}
-
 
 	/**
 	 * @return string
 	 */
 	public function getRootPath()
 	{
-		return (string) $this->get('rootPath', getcwd());
+		if($this->rootPath !== null) {
+			return $this->rootPath;
+		}
+
+		return getcwd();
 	}
 
 	/**
@@ -47,7 +54,8 @@ class Settings implements ISettings
 	 */
 	public function setVerboseMode($verbose)
 	{
-		return $this->set('verboseMode', (bool) $verbose);
+		$this->verboseMode = (bool) $verbose;
+		return $this;
 	}
 
 	/**
@@ -55,27 +63,10 @@ class Settings implements ISettings
 	 */
 	public function isVerboseMode()
 	{
-		return (bool) $this->get('verboseMode', PHP_SAPI === 'cli');
-	}
+		if($this->verboseMode !== null) {
+			return $this->verboseMode;
+		}
 
-	/**
-	 * @param $name
-	 * @param $value
-	 * @return $this
-	 */
-	private function set($name, $value)
-	{
-		$this->config[$name] = $value;
-		return $this;
-	}
-
-	/**
-	 * @param $name
-	 * @param $default
-	 * @return mixed
-	 */
-	private function get($name, $default = null)
-	{
-		return (isset($this->config[$name])) ? $this->config[$name] : $default;
+		return PHP_SAPI === 'cli';
 	}
 }
