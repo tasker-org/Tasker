@@ -7,9 +7,7 @@
  */
 namespace Tasker\Tasks;
 
-use Nette\Object;
-
-abstract class Task extends Object implements ITask
+abstract class Task implements ITask
 {
 
 	/** @var  string */
@@ -44,4 +42,11 @@ abstract class Task extends Object implements ITask
 		return static::$className;
 	}
 
+	/**
+	 * @return \ReflectionClass
+	 */
+	public /**/static/**/ function getReflection()
+	{
+		return new \ReflectionClass(/*5.2*$this*//**/get_called_class()/**/);
+	}
 } 
