@@ -9,7 +9,7 @@ namespace Tasker\Tasks;
 
 use Tasker\InvalidArgumentException;
 
-class CallableTask implements ITask
+class CallableTask extends Task
 {
 
 	/** @var  string */
