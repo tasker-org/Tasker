@@ -16,7 +16,7 @@ class Threading
 	 *
 	 * @return boolean
 	 */
-	public static function available() {
+	public static function isAvailable() {
 		$required_functions = array(
 			'pcntl_fork',
 		);
