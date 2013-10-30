@@ -7,7 +7,7 @@
  */
 namespace Tasker\Tasks;
 
-interface ITask
+interface ITask extends ITaskService
 {
 
 	/**
@@ -19,10 +19,4 @@ interface ITask
 	 * @return string
 	 */
 	public function getSectionName();
-
-	/**
-	 * @param array $config
-	 * @return mixed
-	 */
-	public function run(array $config);
 }
