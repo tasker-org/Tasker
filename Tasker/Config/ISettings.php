@@ -19,4 +19,9 @@ interface ISettings
 	 * @return bool
 	 */
 	public function isVerboseMode();
+
+	/**
+	 * @return int
+	 */
+	public function getThreadsLimit();
 }
