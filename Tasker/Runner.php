@@ -63,7 +63,7 @@ class Runner
 				}
 
 				// let the CPU do its work
-				sleep(1);
+				usleep(50000);
 			}
 
 			Memory::clear();
