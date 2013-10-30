@@ -116,7 +116,7 @@ class Tasker
 	 */
 	protected function createRunner()
 	{
-		return new Runner($this->configContainer, $this->taskContainer);
+		return new Runner($this->configContainer, $this->taskContainer, $this->settings);
 	}
 
 	/**

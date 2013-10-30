@@ -8,6 +8,7 @@
 namespace Tasker;
 
 use Tasker\Config\ConfigContainer;
+use Tasker\Config\ISettings;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
 use Tasker\Threading\Memory;
@@ -22,17 +23,22 @@ class Runner
 	/** @var \Tasker\TasksContainer  */
 	private $tasks;
 
+	/** @var \Tasker\Config\ISettings  */
+	private $settings;
+
 	/** @var array|Thread[] */
 	private $threads = array();
 
 	/**
 	 * @param ConfigContainer $config
 	 * @param TasksContainer $tasks
+	 * @param ISettings $settings
 	 */
-	function __construct(ConfigContainer $config, TasksContainer $tasks)
+	function __construct(ConfigContainer $config, TasksContainer $tasks, ISettings $settings)
 	{
 		$this->config = $config;
 		$this->tasks = $tasks;
+		$this->settings = $settings;
 	}
 
 	/**
@@ -108,7 +114,7 @@ class Runner
 	protected function processTasks(array &$tasks, IResultSet $set)
 	{
 		foreach ($tasks as $i => $taskName) {
-			if(count($this->threads) < 3) {
+			if(count($this->threads) < $this->settings->getThreadsLimit()) {
 				$this->createThread($taskName, $set);
 				unset($tasks[$i]);
 			}
