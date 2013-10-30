@@ -27,7 +27,7 @@ class Thread {
 	 * @var array
 	 */
 	private $errors = array(
-		Thread::FUNCTION_NOT_CALLABLE   => 'You must specify a valid function name that can be called from the current scope.',
+		Thread::FUNCTION_NOT_CALLABLE   => 'You must specify a valid function name.',
 		Thread::COULD_NOT_FORK          => 'pcntl_fork() returned a status of -1. No new process was created',
 	);
 
@@ -113,7 +113,7 @@ class Thread {
 	 * @return boolean
 	 */
 	public static function runnableOk( $_runnable ) {
-		return ( function_exists( $_runnable ) && is_callable( $_runnable ) );
+		return ( is_callable( $_runnable ) );
 	}
 
 	/**
