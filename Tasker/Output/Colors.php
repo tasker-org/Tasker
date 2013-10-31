@@ -7,6 +7,8 @@
  */
 namespace Tasker\Output;
 
+use Tasker\ErrorException;
+
 class Colors
 {
 
@@ -34,23 +36,15 @@ class Colors
 
 	/**
 	 * @param $type
-	 * @return string
+	 * @return mixed
+	 * @throws \Tasker\ErrorException
 	 */
 	private static  function getColor($type)
 	{
-		$color = null;
-		switch($type) {
-			case IWriter::SUCCESS;
-				$color = 'green';
-				break;
-			case IWriter::ERROR;
-				$color = 'red';
-				break;
-			default;
-				$color = 'blue';
-				break;
+		if(!isset(static::$bgColors[$type])) {
+			throw new ErrorException('Unsupported color.');
 		}
 
-		return static::$bgColors[$color];
+		return static::$bgColors[$type];
 	}
 }

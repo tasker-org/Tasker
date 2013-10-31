@@ -13,9 +13,9 @@ interface IWriter
 {
 
 	const NONE = null;
-	const SUCCESS = 'success';
-	const ERROR = 'error';
-	const INFO = 'info';
+	const SUCCESS = 'green';
+	const ERROR = 'red';
+	const INFO = 'blue';
 
 	/**
 	 * @param string $message
