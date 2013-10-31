@@ -66,17 +66,13 @@ class ConfigContainer
 	/**
 	 * @param $name
 	 * @return mixed
-	 * @throws \Tasker\InfoException
 	 */
 	public function getSection($name)
 	{
 		$container = $this->getContainer();
-
 		if(isset($container[$name])) {
 			return $container[$name];
 		}
-
-		throw new InfoException('Configuration for task "' . $name . '" does not exist.');
 	}
 
 	/**
