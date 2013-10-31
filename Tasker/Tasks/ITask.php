@@ -11,6 +11,12 @@ interface ITask extends ITaskService
 {
 
 	/**
+	 * @param string $name
+	 * @return $this
+	 */
+	public function setName($name);
+
+	/**
 	 * @return string
 	 */
 	public function getName();
@@ -19,4 +25,10 @@ interface ITask extends ITaskService
 	 * @return string
 	 */
 	public function getSectionName();
+
+	/**
+	 * @param string $name
+	 * @return $this
+	 */
+	public function setSectionName($name);
 }

@@ -17,15 +17,11 @@ class TasksContainer
 
 	/**
 	 * @param ITask $task
-	 * @param null $name
 	 * @throws InvalidStateException
 	 */
-	public function registerTask(ITask $task, $name = null)
+	public function registerTask(ITask $task)
 	{
-		if($name === null) {
-			$name = $task->getName();
-		}
-
+		$name = $task->getName();
 		if(isset($this->tasks[$name])) {
 			throw new InvalidStateException('Task with same name "' . $name . ' exist yet.');
 		}

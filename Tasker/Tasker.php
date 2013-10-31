@@ -66,16 +66,24 @@ class Tasker
 		}
 
 		if(!$task instanceof ITask && $task instanceof ITaskService) {
-			$task = new CallableTask($name, array($task, 'run'), $configSection);
+			$task = new CallableTask(array($task, 'run'));
 		}elseif(is_callable($task)){
-			$task = new CallableTask($name, $task, $configSection);
+			$task = new CallableTask($task);
 		}
 
 		if(!$task instanceof ITask) {
-			throw new InvalidArgumentException('Invalid task format given');
+			throw new InvalidArgumentException('Invalid task type given.');
 		}
 
-		$this->tasksContainer->registerTask($task, $name);
+		if($name !== null) {
+			$task->setName($name);
+		}
+
+		if($configSection !== null) {
+			$task->setSectionName($name);
+		}
+
+		$this->tasksContainer->registerTask($task);
 		return $this;
 	}
 

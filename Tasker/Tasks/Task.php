@@ -15,12 +15,26 @@ abstract class Task extends Object implements ITask
 	/** @var  string */
 	public static $className;
 
-	/**
-	 * @return string
-	 */
-	public function getSectionName()
+	/** @var  string */
+	protected $name;
+
+	/** @var  string */
+	protected $sectionName;
+
+	function __construct()
 	{
-		return $this->getName();
+		$this->name = self::getClassName();
+		$this->sectionName = $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 * @return $this
+	 */
+	public function setName($name)
+	{
+		$this->name = $name;
+		return $this;
 	}
 
 	/**
@@ -28,7 +42,25 @@ abstract class Task extends Object implements ITask
 	 */
 	public function getName()
 	{
-		return self::getClassName();
+		return $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSectionName()
+	{
+		return $this->sectionName;
+	}
+
+	/**
+	 * @param string $sectionName
+	 * @return $this
+	 */
+	public function setSectionName($sectionName)
+	{
+		$this->sectionName = $sectionName;
+		return $this;
 	}
 
 	/**
