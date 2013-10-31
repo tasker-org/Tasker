@@ -24,7 +24,7 @@ class Colors
 	 * @param $type
 	 * @return string
 	 */
-	public static function getColored($message, $type)
+	public static function getColored($message, $type = IWriter::NONE)
 	{
 		if($type !== IWriter::NONE) {
 			$pattern = "\033[__!COLOR__m__!MESSAGE__\033[0m";
@@ -42,7 +42,7 @@ class Colors
 	private static function getColor($type)
 	{
 		if(!isset(static::$bgColors[$type])) {
-			throw new ErrorException('Unsupported color.');
+			throw new ErrorException('Unsupported color "' . $type . '"');
 		}
 
 		return static::$bgColors[$type];
