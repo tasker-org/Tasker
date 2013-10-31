@@ -18,6 +18,8 @@ use Tasker\Threading\Thread;
 class Runner
 {
 
+	const HALF_SECOND = 50000;
+
 	/** @var \Tasker\Config\ConfigContainer  */
 	private $config;
 
@@ -65,8 +67,7 @@ class Runner
 					}
 				}
 
-				// let the CPU do its work
-				usleep(50000);
+				$this->pause();
 			}
 
 			Memory::clear();
@@ -143,5 +144,15 @@ class Runner
 		$thread = new Thread(array($this, 'runTask'));
 		$thread->start($taskName);
 		return $thread;
+	}
+
+	/**
+	 * @return $this
+	 */
+	private function pause()
+	{
+		// let the CPU do its work
+		usleep(self::HALF_SECOND);
+		return $this;
 	}
 }
