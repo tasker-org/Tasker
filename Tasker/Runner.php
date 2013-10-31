@@ -121,7 +121,7 @@ class Runner
 	{
 		foreach ($tasks as $i => $taskName) {
 			if(count($this->threads) < $this->settings->getThreadsLimit()) {
-				$this->createThread($taskName, $set);
+				$this->threads[$taskName] = $this->createThread($taskName, $set);
 				unset($tasks[$i]);
 			}
 		}
@@ -132,7 +132,7 @@ class Runner
 	/**
 	 * @param $taskName
 	 * @param IResultSet $set
-	 * @return $this
+	 * @return Thread
 	 */
 	protected function createThread($taskName, IResultSet $set)
 	{
@@ -142,7 +142,6 @@ class Runner
 
 		$thread = new Thread(array($this, 'runTask'));
 		$thread->start($taskName);
-		$this->threads[$taskName] = $thread;
 		return $thread;
 	}
 }
