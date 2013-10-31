@@ -7,7 +7,6 @@
  */
 namespace Tasker\Config;
 
-use Tasker\InfoException;
 use Tasker\InvalidStateException;
 
 class ConfigContainer

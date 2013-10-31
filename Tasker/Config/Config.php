@@ -14,7 +14,7 @@ abstract class Config implements IConfig
 {
 
 	/** @var  mixed */
-	private $config;
+	protected $config;
 
 	/** @var string  */
 	protected $configPath;
@@ -34,10 +34,14 @@ abstract class Config implements IConfig
 
 	/**
 	 * @return $this
+	 * @throws \Tasker\InvalidStateException
 	 */
 	public function loadConfig()
 	{
-		$this->config = file_get_contents($this->configPath);
+		$this->config = @file_get_contents($this->configPath);
+		if($this->config === false) {
+			throw new InvalidStateException('Cannot load config file "' . $this->configPath . '"');
+		}
 		return $this;
 	}
 
