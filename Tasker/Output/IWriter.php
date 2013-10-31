@@ -12,10 +12,9 @@ namespace Tasker\Output;
 interface IWriter
 {
 
+	const NONE = null;
 	const SUCCESS = 'success';
-
 	const ERROR = 'error';
-
 	const INFO = 'info';
 
 	/**

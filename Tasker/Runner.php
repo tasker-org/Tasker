@@ -49,6 +49,7 @@ class Runner
 	{
 		$tasks = $this->tasks->getTasksName();
 		if(count($tasks)) {
+			$set->addResult('Running tasks...', IWriter::NONE);
 			Memory::init();
 
 			$this->processTasks($tasks, $set);
@@ -67,6 +68,9 @@ class Runner
 			}
 
 			Memory::clear();
+			$set->addResult('Tasks completed.', IWriter::NONE);
+		}else{
+			$set->addResult('No tasks for process.', IWriter::NONE);
 		}
 
 		return $set;
