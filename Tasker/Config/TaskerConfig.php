@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Settings
+ * Class TaskerConfig
  *
  * @author: Jiří Šifalda <sifalda.jiri@gmail.com>
  * @date: 28.08.13
@@ -9,8 +9,11 @@ namespace Tasker\Config;
 
 use Tasker\InvalidArgumentException;
 
-class Settings implements ISettings
+class TaskerConfig extends Config implements ITaskerConfig
 {
+
+	/** @var  mixed */
+	protected $config;
 
 	/** @var  string */
 	private $rootPath;
@@ -66,7 +69,7 @@ class Settings implements ISettings
 	/**
 	 * @return bool
 	 */
-	public function isVerboseMode()
+	public function getVerboseMode()
 	{
 		if($this->verboseMode !== null) {
 			return $this->verboseMode;
@@ -96,5 +99,21 @@ class Settings implements ISettings
 	public function getThreadsLimit()
 	{
 		return $this->threadsLimit;
+	}
+
+	/**
+	 * @return $this
+	 */
+	public function loadConfig()
+	{
+		$methods = $this->getReflection()->getMethods(\ReflectionMethod::IS_PUBLIC);
+		foreach ($methods as $method) {
+			if(substr($method->name, 0, 3) === 'get') {
+				$index = lcfirst(str_replace('get', '', $method->name));
+				$this->config[$index] = $method->invoke($this);
+			}
+		}
+
+		return $this;
 	}
 }

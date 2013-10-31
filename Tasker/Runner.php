@@ -8,7 +8,7 @@
 namespace Tasker;
 
 use Tasker\Config\ConfigContainer;
-use Tasker\Config\ISettings;
+use Tasker\Config\ITaskerConfig;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
 use Tasker\Utils\Timer;
@@ -26,7 +26,7 @@ class Runner
 	/** @var \Tasker\TasksContainer  */
 	private $tasks;
 
-	/** @var \Tasker\Config\ISettings  */
+	/** @var \Tasker\Config\ITaskerConfig  */
 	private $settings;
 
 	/** @var array|Thread[] */
@@ -35,9 +35,9 @@ class Runner
 	/**
 	 * @param ConfigContainer $config
 	 * @param TasksContainer $tasks
-	 * @param ISettings $settings
+	 * @param ITaskerConfig $settings
 	 */
-	function __construct(ConfigContainer $config, TasksContainer $tasks, ISettings $settings)
+	function __construct(ConfigContainer $config, TasksContainer $tasks, ITaskerConfig $settings)
 	{
 		$this->config = $config;
 		$this->tasks = $tasks;

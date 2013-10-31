@@ -7,10 +7,10 @@
  */
 namespace Tasker;
 
-use Tasker\Config\ISettings;
+use Tasker\Config\ITaskerConfig;
 use Tasker\Config\JsonConfig;
 use Tasker\Config\ConfigContainer;
-use Tasker\Config\Settings;
+use Tasker\Config\TaskerConfig;
 use Tasker\Setters\IRootPathSetter;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
@@ -19,7 +19,7 @@ use Tasker\Tasks\ITaskService;
 class Tasker
 {
 
-	/** @var \Tasker\Config\ISettings  */
+	/** @var \Tasker\Config\ITaskerConfig  */
 	private $settings;
 
 	/** @var ConfigContainer  */
@@ -29,17 +29,18 @@ class Tasker
 	private $taskContainer;
 
 	/**
-	 * @param ISettings $settings
+	 * @param ITaskerConfig $settings
 	 */
-	function __construct(ISettings $settings = null)
+	function __construct(ITaskerConfig $settings = null)
 	{
 		if($settings === null) {
-			$settings = new Settings;
+			$settings = new TaskerConfig;
 		}
 
 		$this->settings = $settings;
 		$this->taskContainer = new TasksContainer;
 		$this->configContainer = new ConfigContainer;
+		$this->configContainer->addConfig($settings);
 	}
 
 	/**
@@ -124,7 +125,7 @@ class Tasker
 	protected function createResultSet()
 	{
 		$results = new ResultSet;
-		return $results->setVerboseMode($this->settings->isVerboseMode());
+		return $results->setVerboseMode($this->settings->getVerboseMode());
 	}
 
 	/**

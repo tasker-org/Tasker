@@ -1,13 +1,13 @@
 <?php
 /**
- * Class ISettings
+ * Class ITaskerConfig
  *
  * @author: Jiří Šifalda <sifalda.jiri@gmail.com>
  * @date: 28.08.13
  */
 namespace Tasker\Config;
 
-interface ISettings
+interface ITaskerConfig extends IConfig
 {
 
 	/**
@@ -18,7 +18,7 @@ interface ISettings
 	/**
 	 * @return bool
 	 */
-	public function isVerboseMode();
+	public function getVerboseMode();
 
 	/**
 	 * @return int
