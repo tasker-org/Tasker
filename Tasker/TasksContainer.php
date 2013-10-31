@@ -8,13 +8,11 @@
 namespace Tasker;
 
 use Tasker\Tasks\ITask;
-use Tasker\InvalidStateException;
-use Tasker\InvalidArgumentException;
 
 class TasksContainer
 {
 
-	/** @var array  */
+	/** @var array|ITask[]  */
 	private $tasks = array();
 
 	/**
@@ -61,7 +59,7 @@ class TasksContainer
 	}
 
 	/**
-	 * @return array
+	 * @return array|Tasks\ITask[]
 	 */
 	public function getTasks()
 	{
