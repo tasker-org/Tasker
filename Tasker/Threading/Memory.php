@@ -7,7 +7,7 @@
  */
 namespace Tasker\Threading;
 
-use Nette\Object;
+use Tasker\Object;
 use Tasker\InvalidStateException;
 
 class Memory extends Object
