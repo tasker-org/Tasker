@@ -23,6 +23,10 @@
     "tasker/utils": ">=1.1"
   },
 
+  "require-dev": {
+    "nette/tester": ">=0.9.3"
+  },
+
   "config": {
     "vendor-dir": "libs"
   },
