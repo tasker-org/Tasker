@@ -1,15 +1,16 @@
 <?php
 /**
- * Class ConfigContainer
+ * Class Container
  *
  * @author: Jiří Šifalda <sifalda.jiri@gmail.com>
  * @date: 28.08.13
  */
-namespace Tasker\Config;
+namespace Tasker\Configuration;
 
 use Tasker\InvalidStateException;
+use Tasker\Object;
 
-class ConfigContainer
+class Container extends Object implements ISettings
 {
 
 	/** @var  array */
@@ -80,5 +81,50 @@ class ConfigContainer
 	public function getConfigs()
 	{
 		return $this->configs;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRootPath()
+	{
+		return (string) $this->getGlobalConfig('rootPath', getcwd());
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isVerbose()
+	{
+		return (bool) $this->getGlobalConfig('verbose', PHP_SAPI === 'cli');
+	}
+
+	/**
+	 * @return int
+	 * @throws \Tasker\InvalidStateException
+	 */
+	public function getThreadsLimit()
+	{
+		$threadsLimit = (int) $this->getGlobalConfig('threadsLimit', 10);
+		if($threadsLimit > 10000) {
+			throw new InvalidStateException('Treads limit is too high. Set limit smaller then 10000.');
+		}
+
+		return $threadsLimit;
+	}
+
+	/**
+	 * @param string $name
+	 * @param null $default
+	 * @return mixed
+	 */
+	protected function getGlobalConfig($name, $default = null)
+	{
+		$container = $this->getContainer();
+		if(isset($container[$name])) {
+			return $container[$name];
+		}
+
+		return $default;
 	}
 }

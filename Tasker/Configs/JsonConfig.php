@@ -5,9 +5,10 @@
  * @author: Jiří Šifalda <sifalda.jiri@gmail.com>
  * @date: 27.08.13
  */
-namespace Tasker\Config;
+namespace Tasker\Configs;
 
 use Tasker\Utils\Arrays;
+use Tasker\Configuration\Config;
 
 class JsonConfig extends Config
 {

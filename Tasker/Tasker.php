@@ -7,11 +7,8 @@
  */
 namespace Tasker;
 
-use Tasker\Config\ITaskerConfig;
-use Tasker\Config\JsonConfig;
-use Tasker\Config\ConfigContainer;
-use Tasker\Config\TaskerConfig;
-use Tasker\Setters\IRootPathSetter;
+use Tasker\Configs\JsonConfig;
+use Tasker\Configuration\Container;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
@@ -19,28 +16,20 @@ use Tasker\Tasks\ITaskService;
 class Tasker
 {
 
-	/** @var \Tasker\Config\ITaskerConfig  */
-	private $settings;
-
-	/** @var ConfigContainer  */
-	private $configContainer;
+	/** @var Container  */
+	private $container;
 
 	/** @var TasksContainer */
-	private $taskContainer;
+	private $tasksContainer;
 
-	/**
-	 * @param ITaskerConfig $settings
-	 */
-	function __construct(ITaskerConfig $settings = null)
+	/** @var Runner  */
+	private $runner;
+
+	function __construct()
 	{
-		if($settings === null) {
-			$settings = new TaskerConfig;
-		}
-
-		$this->settings = $settings;
-		$this->taskContainer = new TasksContainer;
-		$this->configContainer = new ConfigContainer;
-		$this->configContainer->addConfig($settings);
+		$this->tasksContainer = new TasksContainer;
+		$this->container = new Container;
+		$this->runner = new Runner($this->container);
 	}
 
 	/**
@@ -56,7 +45,7 @@ class Tasker
 
 		switch ($this->getFileExtension($path)) {
 			case JsonConfig::EXTENSION:
-				$this->configContainer->addConfig(new JsonConfig($path));
+				$this->container->addConfig(new JsonConfig($path));
 			break;
 		}
 
@@ -72,13 +61,11 @@ class Tasker
 	 */
 	public function registerTask($task, $name = null, $configSection = null)
 	{
-
 		if(!$task instanceof ITask && $name === null) {
 			throw new InvalidArgumentException('Please set task name');
 		}
 
 		if(!$task instanceof ITask && $task instanceof ITaskService) {
-			$this->callSetters($task);
 			$task = new CallableTask($name, array($task, 'run'), $configSection);
 		}elseif(is_callable($task)){
 			$task = new CallableTask($name, $task, $configSection);
@@ -88,7 +75,7 @@ class Tasker
 			throw new InvalidArgumentException('Invalid task format given');
 		}
 
-		$this->taskContainer->registerTask($task, $name);
+		$this->tasksContainer->registerTask($task, $name);
 		return $this;
 	}
 
@@ -97,35 +84,17 @@ class Tasker
 	 */
 	public function run()
 	{
-		$runner = $this->createRunner();
-		return $runner->run($this->createResultSet());
+		return $this->runner->run($this->tasksContainer);
 	}
 
 	/**
-	 * @param $name
-	 * @return \Exception|string
+	 * @param string $name
+	 * @return mixed
 	 */
 	public function runTask($name)
 	{
-		$runner = $this->createRunner();
-		return $runner->runTask($name);
-	}
-
-	/**
-	 * @return Runner
-	 */
-	protected function createRunner()
-	{
-		return new Runner($this->configContainer, $this->taskContainer, $this->settings);
-	}
-
-	/**
-	 * @return ResultSet
-	 */
-	protected function createResultSet()
-	{
-		$results = new ResultSet;
-		return $results->setVerboseMode($this->settings->getVerboseMode());
+		$task = $this->tasksContainer->getTask($name);
+		return $task->run($this->container->getSection($task->getSectionName()));
 	}
 
 	/**
@@ -135,15 +104,5 @@ class Tasker
 	private function getFileExtension($path)
 	{
 		return pathinfo($path, PATHINFO_EXTENSION);
-	}
-
-	/**
-	 * @param ITaskService $task
-	 */
-	protected function callSetters(ITaskService &$task)
-	{
-		if($task instanceof IRootPathSetter) {
-			$task->setRootPath($this->settings->getRootPath());
-		}
 	}
 }

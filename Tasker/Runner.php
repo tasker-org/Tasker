@@ -7,10 +7,10 @@
  */
 namespace Tasker;
 
-use Tasker\Config\ConfigContainer;
-use Tasker\Config\ITaskerConfig;
+use Tasker\Configuration\Container;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
+use Tasker\Tasks\ITask;
 use Tasker\Utils\Timer;
 use Tasker\Threading\Memory;
 use Tasker\Threading\Thread;
@@ -20,50 +20,44 @@ class Runner
 
 	const HALF_SECOND = 50000;
 
-	/** @var \Tasker\Config\ConfigContainer  */
+	/** @var \Tasker\Configuration\Container  */
 	private $config;
 
-	/** @var \Tasker\TasksContainer  */
-	private $tasks;
-
-	/** @var \Tasker\Config\ITaskerConfig  */
-	private $settings;
+	/** @var \Tasker\ResultSet  */
+	private $resultSet;
 
 	/** @var array|Thread[] */
 	private $threads = array();
 
 	/**
-	 * @param ConfigContainer $config
-	 * @param TasksContainer $tasks
-	 * @param ITaskerConfig $settings
+	 * @param Container $config
 	 */
-	function __construct(ConfigContainer $config, TasksContainer $tasks, ITaskerConfig $settings)
+	function __construct(Container $config)
 	{
 		$this->config = $config;
-		$this->tasks = $tasks;
-		$this->settings = $settings;
+		$this->resultSet = new ResultSet($this->config->isVerbose());
 	}
 
 	/**
-	 * @param IResultSet $set
-	 * @return IResultSet
+	 * @param TasksContainer $tasks
+	 * @return ResultSet
 	 */
-	public function run(IResultSet $set)
+	public function run(TasksContainer $tasks)
 	{
-		$tasks = $this->tasks->getTasksName();
+		$tasks = $tasks->getTasks();
 		if(count($tasks)) {
 			Timer::d('process');
-			$set->addResult('Running tasks...', IWriter::NONE);
+			$this->resultSet->addResult('Running tasks...', IWriter::NONE);
 			Memory::init();
 
-			$this->processTasks($tasks, $set);
+			$this->processTasks($tasks, $this->resultSet);
 
 			while(!empty($this->threads)) {
 				foreach($this->threads as $name => $thread) {
 					if(!$thread->isAlive()) {
 						unset($this->threads[$name]);
-						$this->processTaskResult($name, $set);
-						$this->processTasks($tasks, $set);
+						$this->processTaskResult($name);
+						$this->processTasks($tasks);
 					}
 				}
 
@@ -71,59 +65,62 @@ class Runner
 			}
 
 			Memory::clear();
-			$set->addResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s', IWriter::NONE);
+			$this->resultSet->addResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s', IWriter::NONE);
 		}else{
-			$set->addResult('No tasks for process.', IWriter::NONE);
+			$this->resultSet->addResult('No tasks for process.', IWriter::NONE);
 		}
 
-		return $set;
+		return $this->resultSet;
 	}
 
 	/**
-	 * @param $name
+	 * @param ITask $task
 	 */
-	public function runTask($name)
+	public function runTask(ITask $task)
 	{
 		try {
-			$task = $this->tasks->getTask($name);
 			$result = array(IWriter::SUCCESS, $task->run($this->config->getSection($task->getSectionName())));
 		}catch (\Exception $ex) {
 			$result = array(IWriter::ERROR, $ex->getMessage());
 		}
 
-		Memory::set($name, $result);
+		Memory::set($task->getName(), $result);
 	}
 
 	/**
-	 * @param IResultSet $set
 	 * @param $taskName
 	 */
-	private function processTaskResult($taskName, IResultSet $set)
+	private function processTaskResult($taskName)
 	{
 		list($type, $result) = (array) Memory::get($taskName);
 		if($result !== null) {
-			$set->addResult('Task "'. $taskName . '" completed with result:', Writer::INFO);
+			$this->resultSet->addResult('Task "'. $taskName . '" completed with result:', Writer::INFO);
 			if(is_array($result)) {
-				$set->mergeResults($result);
+				$this->resultSet->mergeResults($result);
 			}else{
-				$set->addResult($result, $type);
+				$this->resultSet->addResult($result, $type);
 			}
 		}else{
-			$set->addResult('Task "'. $taskName . '" completed!', Writer::SUCCESS);
+			$this->resultSet->addResult('Task "'. $taskName . '" completed!', Writer::SUCCESS);
 		}
 	}
 
 	/**
 	 * @param array $tasks
-	 * @param IResultSet $set
 	 * @return $this
 	 */
-	protected function processTasks(array &$tasks, IResultSet $set)
+	protected function processTasks(array &$tasks)
 	{
-		foreach ($tasks as $i => $taskName) {
-			if(count($this->threads) < $this->settings->getThreadsLimit()) {
-				$this->threads[$taskName] = $this->createThread($taskName, $set);
-				unset($tasks[$i]);
+		$diff = count($this->threads) - $this->config->getThreadsLimit();
+		if($diff < 0) {
+			foreach ($tasks as $name => $task) {
+				if($diff >= 0) {
+					break;
+				}
+
+				$this->threads[$name] = $this->createThread($task);
+				unset($tasks[$name]);
+				$diff++;
 			}
 		}
 
@@ -131,18 +128,17 @@ class Runner
 	}
 
 	/**
-	 * @param $taskName
-	 * @param IResultSet $set
+	 * @param ITask $task
 	 * @return Thread
 	 */
-	protected function createThread($taskName, IResultSet $set)
+	protected function createThread(ITask $task)
 	{
-		if($set->isVerboseMode()) {
-			$set->addResult('Running task "' . $taskName . '"', Writer::INFO);
+		if($this->config->isVerbose()) {
+			$this->resultSet->addResult('Running task "' . $task->getName() . '"', Writer::INFO);
 		}
 
 		$thread = new Thread(array($this, 'runTask'));
-		$thread->start($taskName);
+		$thread->start($task);
 		return $thread;
 	}
 

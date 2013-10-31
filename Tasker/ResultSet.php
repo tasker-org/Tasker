@@ -20,11 +20,11 @@ class ResultSet implements IResultSet
 	private $results = array();
 
 	/**
-	 * @param array $results
+	 * @param $verboseMode
 	 */
-	function __construct(array $results = array())
+	function __construct($verboseMode)
 	{
-		$this->results = $results;
+		$this->verbose = (bool) $verboseMode;
 	}
 
 	/**
@@ -33,24 +33,6 @@ class ResultSet implements IResultSet
 	public function getResults()
 	{
 		return $this->results;
-	}
-
-	/**
-	 * @param $verbose
-	 * @return $this
-	 */
-	public function setVerboseMode($verbose)
-	{
-		$this->verbose = (bool) $verbose;
-		return $this;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isVerboseMode()
-	{
-		return $this->verbose;
 	}
 
 	/**

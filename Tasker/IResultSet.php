@@ -14,11 +14,6 @@ interface IResultSet
 {
 
 	/**
-	 * @return bool
-	 */
-	public function isVerboseMode();
-
-	/**
 	 * @return array
 	 */
 	public function getResults();

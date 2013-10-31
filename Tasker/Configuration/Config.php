@@ -5,7 +5,7 @@
  * @author: Jiří Šifalda <sifalda.jiri@gmail.com>
  * @date: 27.08.13
  */
-namespace Tasker\Config;
+namespace Tasker\Configuration;
 
 use Tasker\InvalidArgumentException;
 use Tasker\InvalidStateException;

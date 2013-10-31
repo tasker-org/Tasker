@@ -6,7 +6,7 @@
  * @date: 27.08.13
  */
 
-namespace Tasker\Config;
+namespace Tasker\Configuration;
 
 
 interface IConfig
