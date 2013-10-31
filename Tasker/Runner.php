@@ -11,6 +11,7 @@ use Tasker\Config\ConfigContainer;
 use Tasker\Config\ISettings;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
+use Tasker\Utils\Timer;
 use Tasker\Threading\Memory;
 use Tasker\Threading\Thread;
 
@@ -49,6 +50,7 @@ class Runner
 	{
 		$tasks = $this->tasks->getTasksName();
 		if(count($tasks)) {
+			Timer::d('process');
 			$set->addResult('Running tasks...', IWriter::NONE);
 			Memory::init();
 
@@ -68,7 +70,7 @@ class Runner
 			}
 
 			Memory::clear();
-			$set->addResult('Tasks completed.', IWriter::NONE);
+			$set->addResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s', IWriter::NONE);
 		}else{
 			$set->addResult('No tasks for process.', IWriter::NONE);
 		}
