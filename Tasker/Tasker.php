@@ -15,7 +15,6 @@ use Tasker\Setters\IRootPathSetter;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
-use Tasker\InvalidArgumentException;
 
 class Tasker
 {

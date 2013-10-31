@@ -39,7 +39,7 @@ class Colors
 	 * @return mixed
 	 * @throws \Tasker\ErrorException
 	 */
-	private static  function getColor($type)
+	private static function getColor($type)
 	{
 		if(!isset(static::$bgColors[$type])) {
 			throw new ErrorException('Unsupported color.');
