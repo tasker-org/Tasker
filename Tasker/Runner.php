@@ -46,7 +46,7 @@ class Runner
 		$tasks = $tasks->getTasks();
 		if(count($tasks)) {
 			Timer::d('process');
-			$this->getResultSet()->addResult('Running tasks...', IWriter::NONE);
+			$this->getResultSet()->printResult('Running tasks...');
 			Memory::init();
 
 			$this->processTasks($tasks, $this->getResultSet());
@@ -64,9 +64,9 @@ class Runner
 			}
 
 			Memory::clear();
-			$this->getResultSet()->addResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s', IWriter::NONE);
+			$this->getResultSet()->printResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s');
 		}else{
-			$this->getResultSet()->addResult('No tasks for process.', IWriter::NONE);
+			$this->getResultSet()->printResult('No tasks for process.');
 		}
 
 		return $this->getResultSet();
@@ -95,7 +95,7 @@ class Runner
 		if($result !== null) {
 			$this->getResultSet()->addResult('Task "'. $taskName . '" completed with result:', Writer::INFO);
 			if(is_array($result)) {
-				$this->getResultSet()->mergeResults($result);
+				$this->getResultSet()->addResults($result);
 			}else{
 				$this->getResultSet()->addResult($result, $type);
 			}

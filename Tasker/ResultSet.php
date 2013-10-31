@@ -14,7 +14,7 @@ class ResultSet implements IResultSet
 {
 
 	/** @var bool  */
-	public $verbose = true;
+	public $verbose;
 
 	/** @var array  */
 	private $results = array();
@@ -39,16 +39,10 @@ class ResultSet implements IResultSet
 	 * @param array $results
 	 * @return $this
 	 */
-	public function mergeResults(array $results)
+	public function addResults(array $results)
 	{
-		if(count($results)) {
-			foreach ($results as $type => $result) {
-				if(!is_string($type)) {
-					$type = IWriter::SUCCESS;
-				}
-
-				$this->addResult($result, $type);
-			}
+		foreach ($results as $type => $result) {
+			$this->addResult($result, $type);
 		}
 
 		return $this;
@@ -61,44 +55,26 @@ class ResultSet implements IResultSet
 	 */
 	public function addResult($result, $type = IWriter::SUCCESS)
 	{
-		$result = array($result, $type);
+		$this->results[] = array($result, $type);
 		if($this->verbose === true) {
-			$this->printResult($result);
+			$this->printResult($result, $type);
 		}
-
-		$this->results[] = $result;
 		return $this;
 	}
 
 	/**
-	 * @throws \ErrorException
+	 * @param \Exception|string $message
+	 * @param null $type
+	 * @return $this
 	 */
-	public function dump()
+	public function printResult($message, $type = IWriter::NONE)
 	{
-		if($this->verbose === false) {
-			if(!count($this->results)) {
-				$this->results[] = array('NO TASKS EXECUTED', IWriter::INFO);
-			}
-
-			foreach ($this->results as $result) {
-				if(!is_array($result)) {
-					$result = array($result, IWriter::SUCCESS);
-				}
-				$this->printResult($result);
-			}
-		}
-	}
-
-	/**
-	 * @param array $result
-	 */
-	protected function printResult(array $result)
-	{
-		list($message, $type) = $result;
 		if($message instanceof \Exception) {
 			Writer::writeException($message);
 		}else{
 			Writer::writeLn($message, $type);
 		}
+
+		return $this;
 	}
 }

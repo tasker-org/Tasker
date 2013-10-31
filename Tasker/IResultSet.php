@@ -22,17 +22,19 @@ interface IResultSet
 	 * @param array $results
 	 * @return $this
 	 */
-	public function mergeResults(array $results);
+	public function addResults(array $results);
 
 	/**
 	 * @param $result
 	 * @param $type
 	 * @return $this
 	 */
-	public function addResult($result, $type = IWriter::SUCCESS);
+	public function addResult($result, $type = IWriter::NONE);
 
 	/**
-	 * @return void
+	 * @param string|\Exception $message
+	 * @param null $type
+	 * @return $this
 	 */
-	public function dump();
+	public function printResult($message, $type = IWriter::NONE);
 }
