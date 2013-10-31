@@ -7,7 +7,9 @@
  */
 namespace Tasker\Tasks;
 
-abstract class Task implements ITask
+use Tasker\Object;
+
+abstract class Task extends Object implements ITask
 {
 
 	/** @var  string */
@@ -40,13 +42,5 @@ abstract class Task implements ITask
 		}
 
 		return static::$className;
-	}
-
-	/**
-	 * @return \ReflectionClass
-	 */
-	public /**/static/**/ function getReflection()
-	{
-		return new \ReflectionClass(/*5.2*$this*//**/get_called_class()/**/);
 	}
 } 

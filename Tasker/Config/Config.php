@@ -9,8 +9,9 @@ namespace Tasker\Config;
 
 use Tasker\InvalidArgumentException;
 use Tasker\InvalidStateException;
+use Tasker\Object;
 
-abstract class Config implements IConfig
+abstract class Config extends Object implements IConfig
 {
 
 	/** @var  mixed */
