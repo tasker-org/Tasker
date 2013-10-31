@@ -35,7 +35,6 @@ class Runner
 	function __construct(Container $config)
 	{
 		$this->config = $config;
-		$this->resultSet = new ResultSet($this->config->isVerbose());
 	}
 
 	/**
@@ -47,10 +46,10 @@ class Runner
 		$tasks = $tasks->getTasks();
 		if(count($tasks)) {
 			Timer::d('process');
-			$this->resultSet->addResult('Running tasks...', IWriter::NONE);
+			$this->getResultSet()->addResult('Running tasks...', IWriter::NONE);
 			Memory::init();
 
-			$this->processTasks($tasks, $this->resultSet);
+			$this->processTasks($tasks, $this->getResultSet());
 
 			while(!empty($this->threads)) {
 				foreach($this->threads as $name => $thread) {
@@ -65,12 +64,12 @@ class Runner
 			}
 
 			Memory::clear();
-			$this->resultSet->addResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s', IWriter::NONE);
+			$this->getResultSet()->addResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s', IWriter::NONE);
 		}else{
-			$this->resultSet->addResult('No tasks for process.', IWriter::NONE);
+			$this->getResultSet()->addResult('No tasks for process.', IWriter::NONE);
 		}
 
-		return $this->resultSet;
+		return $this->getResultSet();
 	}
 
 	/**
@@ -94,14 +93,14 @@ class Runner
 	{
 		list($type, $result) = (array) Memory::get($taskName);
 		if($result !== null) {
-			$this->resultSet->addResult('Task "'. $taskName . '" completed with result:', Writer::INFO);
+			$this->getResultSet()->addResult('Task "'. $taskName . '" completed with result:', Writer::INFO);
 			if(is_array($result)) {
-				$this->resultSet->mergeResults($result);
+				$this->getResultSet()->mergeResults($result);
 			}else{
-				$this->resultSet->addResult($result, $type);
+				$this->getResultSet()->addResult($result, $type);
 			}
 		}else{
-			$this->resultSet->addResult('Task "'. $taskName . '" completed!', Writer::SUCCESS);
+			$this->getResultSet()->addResult('Task "'. $taskName . '" completed!', Writer::SUCCESS);
 		}
 	}
 
@@ -133,13 +132,19 @@ class Runner
 	 */
 	protected function createThread(ITask $task)
 	{
-		if($this->config->isVerbose()) {
-			$this->resultSet->addResult('Running task "' . $task->getName() . '"', Writer::INFO);
-		}
-
+		$this->getResultSet()->addResult('Running task "' . $task->getName() . '"', Writer::INFO);
 		$thread = new Thread(array($this, 'runTask'));
 		$thread->start($task);
 		return $thread;
+	}
+
+	protected function getResultSet()
+	{
+		if($this->resultSet === null) {
+			$this->resultSet = new ResultSet($this->config->isVerbose());
+		}
+
+		return $this->resultSet;
 	}
 
 	/**
