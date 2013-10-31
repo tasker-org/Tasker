@@ -7,8 +7,10 @@
  */
 namespace Tasker;
 
+use Tasker\Configs\ArrayConfig;
 use Tasker\Configs\JsonConfig;
 use Tasker\Configuration\Container;
+use Tasker\Configuration\IConfig;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
@@ -33,22 +35,31 @@ class Tasker
 	}
 
 	/**
-	 * @param $path
+	 * @param string|array|\Tasker\Configuration\IConfig $config
 	 * @return $this
 	 * @throws InvalidArgumentException
 	 */
-	public function addConfig($path)
+	public function addConfig($config)
 	{
-		if(!file_exists($path)) {
-			throw new InvalidArgumentException('Given path "' . $path . '" does not exist.');
+		if(is_array($config)) {
+			$config = new ArrayConfig($config);
+		}elseif(is_string($config)) {
+			if(!file_exists($config)) {
+				throw new InvalidArgumentException('Given path "' . $config . '" does not exist.');
+			}
+
+			switch ($this->getFileExtension($config)) {
+				case JsonConfig::EXTENSION:
+					$config = new JsonConfig($config);
+					break;
+			}
 		}
 
-		switch ($this->getFileExtension($path)) {
-			case JsonConfig::EXTENSION:
-				$this->container->addConfig(new JsonConfig($path));
-			break;
+		if(!$config instanceof IConfig) {
+			throw new InvalidArgumentException('Invalid type "' . gettype($config) . '" given.');
 		}
 
+		$this->container->addConfig($config);
 		return $this;
 	}
 
@@ -111,6 +122,6 @@ class Tasker
 	 */
 	private function getFileExtension($path)
 	{
-		return pathinfo($path, PATHINFO_EXTENSION);
+		return pathinfo((string) $path, PATHINFO_EXTENSION);
 	}
 }
