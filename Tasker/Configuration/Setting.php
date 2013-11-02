@@ -7,8 +7,8 @@
  */
 namespace Tasker\Configuration;
 
+use Tasker\Client\Environment;
 use Tasker\Object;
-use Tasker\Threading\Threading;
 use Tasker\InvalidStateException;
 
 class Setting extends Object implements ISetting
@@ -60,7 +60,7 @@ class Setting extends Object implements ISetting
 	 */
 	public function isMultiThreading()
 	{
-		$isAvailable = Threading::isAvailable();
+		$isAvailable = Environment::isMultiThreading();
 		$allowed = (bool) $this->container->getConfigInNamespace(self::MULTITHREADING, 'allow', $isAvailable);
 		if($allowed === true && $isAvailable === false) {
 			$allowed = false;

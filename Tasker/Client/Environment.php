@@ -19,4 +19,24 @@ class Environment extends Object
 	{
 		return DIRECTORY_SEPARATOR === '/';
 	}
+
+	/**
+	 * Checks if threading is supported by the current
+	 * PHP configuration
+	 *
+	 * @return boolean
+	 */
+	public static function isMultiThreading() {
+		$required_functions = array(
+			'pcntl_fork',
+		);
+
+		foreach($required_functions as $function) {
+			if (!function_exists($function)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 } 
