@@ -15,7 +15,7 @@ use Tasker\Utils\Timer;
 use Tasker\Threading\Memory;
 use Tasker\Threading\Thread;
 
-class Runner extends Object
+class Runner extends Object implements IRunner
 {
 
 	/** @var \Tasker\Configuration\ISetting  */
