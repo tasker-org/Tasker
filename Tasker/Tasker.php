@@ -20,16 +20,20 @@ use Tasker\Threading\ThreadsRunner;
 class Tasker
 {
 
-	/** @var Container  */
+	/** @var \Tasker\Configuration\Container  */
 	private $container;
 
-	/** @var TasksContainer */
+	/** @var \Tasker\TasksContainer  */
 	private $tasksContainer;
+
+	/** @var \Tasker\Configuration\Setting  */
+	private $setting;
 
 	function __construct()
 	{
 		$this->tasksContainer = new TasksContainer;
 		$this->container = new Container;
+		$this->setting = new Setting($this->container);
 	}
 
 	/**
@@ -83,6 +87,7 @@ class Tasker
 			$task->setSectionName($name);
 		}
 
+		$task->setSetting($this->setting);
 		$this->tasksContainer->registerTask($task);
 		return $this;
 	}
@@ -92,6 +97,7 @@ class Tasker
 	 */
 	public function run()
 	{
+		$this->container->buildContainer()->lock();
 		return $this->createRunner()->run($this->tasksContainer);
 	}
 
@@ -148,11 +154,10 @@ class Tasker
 	 */
 	protected function createRunner()
 	{
-		$setting = $this->createSetting();
-		if(count($this->tasksContainer->getTasks()) > 1 && $setting->isMultiThreading()) {
-			$runner = new ThreadsRunner($setting);
+		if(count($this->tasksContainer->getTasks()) > 1 && $this->setting->isMultiThreading()) {
+			$runner = new ThreadsRunner($this->setting);
 		}else{
-			$runner = new Runner($setting);
+			$runner = new Runner($this->setting);
 		}
 
 		if(!$runner instanceof IRunner) {
@@ -160,14 +165,6 @@ class Tasker
 		}
 
 		return $runner;
-	}
-
-	/**
-	 * @return Setting
-	 */
-	protected function createSetting()
-	{
-		return new Setting($this->container->buildContainer());
 	}
 
 	/**

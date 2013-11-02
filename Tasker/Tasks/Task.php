@@ -8,9 +8,13 @@
 namespace Tasker\Tasks;
 
 use Tasker\Object;
+use Tasker\Configuration\ISetting;
 
 abstract class Task extends Object implements ITask
 {
+
+	/** @var  ISetting */
+	protected $setting;
 
 	/** @var  string */
 	protected $name;
@@ -22,6 +26,16 @@ abstract class Task extends Object implements ITask
 	{
 		$this->name = self::getClassName();
 		$this->sectionName = $this->name;
+	}
+
+	/**
+	 * @param \Tasker\Configuration\ISetting $setting
+	 * @return $this
+	 */
+	public function setSetting(ISetting $setting)
+	{
+		$this->setting = $setting;
+		return $this;
 	}
 
 	/**

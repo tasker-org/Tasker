@@ -7,8 +7,16 @@
  */
 namespace Tasker\Tasks;
 
+use Tasker\Configuration\ISetting;
+
 interface ITask extends ITaskService
 {
+
+	/**
+	 * @param ISetting $setting
+	 * @return $this
+	 */
+	public function setSetting(ISetting $setting);
 
 	/**
 	 * @param string $name
