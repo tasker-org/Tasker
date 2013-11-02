@@ -42,12 +42,11 @@ class ThreadsRunner extends Object implements IRunner
 	}
 
 	/**
-	 * @param TasksContainer $tasks
-	 * @return ResultSet
+	 * @param \Tasker\Tasks\ITask[]|array $tasks
+	 * @return \Tasker\IResultSet
 	 */
-	public function run(TasksContainer $tasks)
+	public function run(array $tasks)
 	{
-		$tasks = $tasks->getTasks();
 		if(count($tasks)) {
 			Timer::d(__METHOD__);
 			$this->resultSet->printResult('Running tasks...');

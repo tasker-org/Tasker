@@ -12,8 +12,8 @@ interface IRunner
 {
 
 	/**
-	 * @param TasksContainer $tasks
+	 * @param \Tasker\Tasks\ITask[]|array $tasks
 	 * @return IResultSet
 	 */
-	public function run(TasksContainer $tasks);
+	public function run(array $tasks);
 } 

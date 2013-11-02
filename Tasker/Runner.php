@@ -30,12 +30,11 @@ class Runner extends Object implements IRunner
 	}
 
 	/**
-	 * @param TasksContainer $tasks
+	 * @param \Tasker\Tasks\ITask[]|array $tasks
 	 * @return IResultSet
 	 */
-	public function run(TasksContainer $tasks)
+	public function run(array $tasks)
 	{
-		$tasks = $tasks->getTasks();
 		if(count($tasks)) {
 			Timer::d('process');
 			$this->getResultSet()->printResult('Running tasks...');

@@ -98,7 +98,7 @@ class Tasker
 	public function run()
 	{
 		$this->container->buildContainer()->lock();
-		return $this->createRunner()->run($this->tasksContainer);
+		return $this->createRunner()->run($this->tasksContainer->getTasks());
 	}
 
 	/**
