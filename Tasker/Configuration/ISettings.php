@@ -27,4 +27,9 @@ interface ISettings
 	 */
 	public function getThreadsLimit();
 
+	/**
+	 * @return bool
+	 */
+	public function isMultithreading();
+
 } 

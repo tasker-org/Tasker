@@ -9,6 +9,7 @@ namespace Tasker\Configuration;
 
 use Tasker\InvalidStateException;
 use Tasker\Object;
+use Tasker\Threading\Threading;
 
 class Container extends Object implements ISettings
 {
@@ -111,6 +112,14 @@ class Container extends Object implements ISettings
 		}
 
 		return $threadsLimit;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isMultithreading()
+	{
+		return (bool) $this->getGlobalConfig('multithreading', Threading::isAvailable());
 	}
 
 	/**
