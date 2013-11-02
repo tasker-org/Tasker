@@ -54,8 +54,12 @@ class ResultStorage extends Object
 	 */
 	public function read($taskName)
 	{
-		$content = FileSystem::read($this->getFileName($taskName));
-		return eval('return ' . $content . ';');
+		if(file_exists($file = $this->getFileName($taskName))) {
+			$content = FileSystem::read($file);
+			return eval('return ' . $content . ';');
+		}
+
+		return array(null, null);
 	}
 
 	/**
