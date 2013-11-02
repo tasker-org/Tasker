@@ -31,3 +31,25 @@ if (extension_loaded('xdebug')) {
 function id($val) {
         return $val;
 }
+
+/**
+ * @param callable $callable
+ * @param array $params
+ * @return mixed
+ * @throws Exception
+ */
+function fetchOutput($callable, array $params = array()) {
+	if(!is_callable($callable)) {
+		throw new \Exception('Invalid callback given.');
+	}
+
+	ob_start();
+	try {
+		call_user_func_array($callable, $params);
+	} catch (\Exception $e) {
+		ob_end_clean();
+		throw $e;
+	}
+
+	return ob_get_clean();
+}
