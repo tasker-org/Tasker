@@ -19,7 +19,7 @@ class TasksContainer
 	 * @param ITask $task
 	 * @throws InvalidStateException
 	 */
-	public function registerTask(ITask $task)
+	public function addTask(ITask $task)
 	{
 		$name = $task->getName();
 		if(isset($this->tasks[$name])) {

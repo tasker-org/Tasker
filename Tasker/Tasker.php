@@ -88,7 +88,7 @@ class Tasker
 		}
 
 		$task->setSetting($this->setting);
-		$this->tasksContainer->registerTask($task);
+		$this->tasksContainer->addTask($task);
 		return $this;
 	}
 
