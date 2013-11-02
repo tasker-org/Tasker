@@ -59,10 +59,10 @@ class ThreadsRunner extends Object implements IRunner
 					if(!$thread->isAlive()) {
 						unset($this->threads[$name]);
 						$this->processTaskResult($name);
-						$this->processTasks($tasks);
 					}
 				}
 
+				$this->processTasks($tasks);
 				$this->pause();
 			}
 
