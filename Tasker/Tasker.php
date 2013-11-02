@@ -149,7 +149,7 @@ class Tasker
 	protected function createRunner()
 	{
 		$setting = $this->createSetting();
-		if($setting->isMultiThreading()) {
+		if(count($this->tasksContainer->getTasks()) > 1 && $setting->isMultiThreading()) {
 			$runner = new ThreadsRunner($setting);
 		}else{
 			$runner = new Runner($setting);
