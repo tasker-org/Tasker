@@ -16,8 +16,28 @@ class Container extends Object
 	/** @var  array */
 	private $container;
 
+	/** @var bool  */
+	private $locked = false;
+
 	/** @var array|IConfig[]  */
 	private $configs = array();
+
+	/**
+	 * @return $this
+	 */
+	public function lock()
+	{
+		$this->locked = true;
+		return $this;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isLocked()
+	{
+		return $this->locked;
+	}
 
 	/**
 	 * @param IConfig $config
@@ -35,32 +55,11 @@ class Container extends Object
 	 */
 	public function getContainer()
 	{
-		if($this->container === null) {
+		if($this->container === null || !$this->isLocked()) {
 			$this->buildContainer();
 		}
 
 		return $this->container;
-	}
-
-	/**
-	 * @return $this
-	 * @throws \Tasker\InvalidStateException
-	 */
-	public function buildContainer()
-	{
-		if(count($this->configs)) {
-			foreach($this->configs as $config) {
-				$content = $config->loadConfig()->getConfig();
-				if(is_array($content)) {
-					$this->container = array_merge((array) $this->container, $content);
-				}else if($content !== null && !is_array($content)) {
-					throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
-				}
-
-			}
-		}
-
-		return $this;
 	}
 
 	/**
@@ -108,5 +107,28 @@ class Container extends Object
 		}
 
 		return $default;
+	}
+
+	/**
+	 * @return $this
+	 * @throws \Tasker\InvalidStateException
+	 */
+	public function buildContainer()
+	{
+		if($this->isLocked()) {
+			throw new InvalidStateException('Cannot build container again. Object is locked.');
+		}
+
+		foreach($this->configs as $config) {
+			$content = $config->loadConfig()->getConfig();
+			if(is_array($content)) {
+				$this->container = array_merge((array) $this->container, $content);
+			}else if($content !== null && !is_array($content)) {
+				throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
+			}
+
+		}
+
+		return $this;
 	}
 }
