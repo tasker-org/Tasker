@@ -14,6 +14,7 @@ use Tasker\Configuration\Setting;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
+use Tasker\Threading\ThreadsRunner;
 
 class Tasker
 {
@@ -24,18 +25,10 @@ class Tasker
 	/** @var TasksContainer */
 	private $tasksContainer;
 
-	/** @var \Tasker\Configuration\Setting  */
-	private $setting;
-
-	/** @var Runner  */
-	private $runner;
-
 	function __construct()
 	{
 		$this->tasksContainer = new TasksContainer;
 		$this->container = new Container;
-		$this->setting = new Setting($this->container);
-		$this->runner = new Runner($this->setting);
 	}
 
 	/**
@@ -96,7 +89,7 @@ class Tasker
 	 */
 	public function run()
 	{
-		return $this->runner->run($this->tasksContainer);
+		return $this->createRunner()->run($this->tasksContainer);
 	}
 
 	/**
@@ -144,6 +137,34 @@ class Tasker
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @return Runner|ThreadsRunner
+	 * @throws InvalidStateException
+	 */
+	protected function createRunner()
+	{
+		$setting = $this->createSetting();
+		if($setting->isMultiThreading()) {
+			$runner = new ThreadsRunner($setting);
+		}else{
+			$runner = new Runner($setting);
+		}
+
+		if(!$runner instanceof IRunner) {
+			throw new InvalidStateException('Tasks runner must be instance of Tasker\IRunner.');
+		}
+
+		return $runner;
+	}
+
+	/**
+	 * @return Setting
+	 */
+	protected function createSetting()
+	{
+		return new Setting($this->container->buildContainer());
 	}
 
 	/**
