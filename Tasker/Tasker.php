@@ -118,16 +118,6 @@ class Tasker
 	}
 
 	/**
-	 * @param string $name
-	 * @return mixed
-	 */
-	public function runTask($name)
-	{
-		$task = $this->tasksContainer->getTask($name);
-		return $task->run($this->container->buildContainer()->lock()->getConfig($task->getSectionName()));
-	}
-
-	/**
 	 * @param array $config
 	 * @return $this
 	 */
