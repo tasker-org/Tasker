@@ -44,7 +44,7 @@ class Dumper
 			} elseif ($cut = strlen($var) > self::MAX_LENGTH) {
 				$var = substr($var, 0, self::MAX_LENGTH) . '...';
 			}
-			return (preg_match('#[^\x09\x0A\x0D\x20-\x7E\xA0-\x{10FFFF}]#u', $var) || preg_last_error() ? strtr($var, $table) : "$var");
+			return (preg_match('#[^\x09\x0A\x0D\x20-\x7E\xA0-\x{10FFFF}]#u', $var) || preg_last_error() ? '"' . strtr($var, $table) . '"' : "'$var'");
 
 		} elseif (is_array($var)) {
 			$out = '';
