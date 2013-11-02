@@ -10,6 +10,7 @@ namespace Tasker;
 use Tasker\Configs\ArrayConfig;
 use Tasker\Configs\JsonConfig;
 use Tasker\Configuration\Container;
+use Tasker\Configuration\IConfig;
 use Tasker\Configuration\Setting;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
@@ -42,6 +43,8 @@ class Tasker
 			$this->addArrayConfig($config);
 		}elseif(is_string($config)) {
 			$this->addFileConfig($config);
+		}elseif($config instanceof IConfig) {
+			$this->container->addConfiguration($config);
 		}else{
 			throw new InvalidArgumentException('Invalid type "' . gettype($config) . '" given.');
 		}
