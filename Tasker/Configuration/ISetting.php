@@ -9,8 +9,10 @@
 namespace Tasker\Configuration;
 
 
-interface ISettings
+interface ISetting
 {
+
+	const MULTITHREADING = 'multithreading';
 
 	/**
 	 * @return string
@@ -30,6 +32,16 @@ interface ISettings
 	/**
 	 * @return bool
 	 */
-	public function isMultithreading();
+	public function isMultiThreading();
+
+	/**
+	 * @return int
+	 */
+	public function getThreadsSleepTime();
+
+	/**
+	 * @return Container
+	 */
+	public function getContainer();
 
 } 

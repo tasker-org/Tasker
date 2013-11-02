@@ -7,7 +7,7 @@
  */
 namespace Tasker;
 
-use Tasker\Configuration\Container;
+use Tasker\Configuration\ISetting;
 use Tasker\Output\IWriter;
 use Tasker\Output\Writer;
 use Tasker\Tasks\ITask;
@@ -15,13 +15,11 @@ use Tasker\Utils\Timer;
 use Tasker\Threading\Memory;
 use Tasker\Threading\Thread;
 
-class Runner
+class Runner extends Object
 {
 
-	const HALF_SECOND = 50000;
-
-	/** @var \Tasker\Configuration\Container  */
-	private $config;
+	/** @var \Tasker\Configuration\ISetting  */
+	private $setting;
 
 	/** @var \Tasker\ResultSet  */
 	private $resultSet;
@@ -30,11 +28,11 @@ class Runner
 	private $threads = array();
 
 	/**
-	 * @param Container $config
+	 * @param ISetting $setting
 	 */
-	function __construct(Container $config)
+	function __construct(ISetting $setting)
 	{
-		$this->config = $config;
+		$this->setting = $setting;
 	}
 
 	/**
@@ -78,7 +76,7 @@ class Runner
 	public function runTask(ITask $task)
 	{
 		try {
-			$result = array(IWriter::SUCCESS, $task->run($this->config->getSection($task->getSectionName())));
+			$result = array(IWriter::SUCCESS, $task->run($this->setting->getContainer()->getConfig($task->getSectionName())));
 		}catch (\Exception $ex) {
 			$result = array(IWriter::ERROR, $ex->getMessage());
 		}
@@ -110,7 +108,7 @@ class Runner
 	 */
 	protected function processTasks(array &$tasks)
 	{
-		$diff = count($this->threads) - $this->config->getThreadsLimit();
+		$diff = count($this->threads) - $this->setting->getThreadsLimit();
 		if($diff < 0) {
 			foreach ($tasks as $name => $task) {
 				if($diff >= 0) {
@@ -138,10 +136,13 @@ class Runner
 		return $thread;
 	}
 
+	/**
+	 * @return ResultSet
+	 */
 	protected function getResultSet()
 	{
 		if($this->resultSet === null) {
-			$this->resultSet = new ResultSet($this->config->isVerbose());
+			$this->resultSet = new ResultSet($this->setting->isVerbose());
 		}
 
 		return $this->resultSet;
@@ -153,7 +154,7 @@ class Runner
 	private function pause()
 	{
 		// let the CPU do its work
-		usleep(self::HALF_SECOND);
+		sleep($this->setting->getThreadsSleepTime());
 		return $this;
 	}
 }

@@ -10,6 +10,7 @@ namespace Tasker;
 use Tasker\Configs\ArrayConfig;
 use Tasker\Configs\JsonConfig;
 use Tasker\Configuration\Container;
+use Tasker\Configuration\Setting;
 use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
@@ -23,6 +24,9 @@ class Tasker
 	/** @var TasksContainer */
 	private $tasksContainer;
 
+	/** @var \Tasker\Configuration\Setting  */
+	private $setting;
+
 	/** @var Runner  */
 	private $runner;
 
@@ -30,7 +34,8 @@ class Tasker
 	{
 		$this->tasksContainer = new TasksContainer;
 		$this->container = new Container;
-		$this->runner = new Runner($this->container);
+		$this->setting = new Setting($this->container);
+		$this->runner = new Runner($this->setting);
 	}
 
 	/**
@@ -101,7 +106,7 @@ class Tasker
 	public function runTask($name)
 	{
 		$task = $this->tasksContainer->getTask($name);
-		return $task->run($this->container->getSection($task->getSectionName()));
+		return $task->run($this->container->getConfig($task->getSectionName()));
 	}
 
 	/**
@@ -110,7 +115,7 @@ class Tasker
 	 */
 	protected function addArrayConfig(array $config)
 	{
-		$this->container->addConfig(new ArrayConfig($config));
+		$this->container->addConfiguration(new ArrayConfig($config));
 		return $this;
 	}
 
@@ -135,7 +140,7 @@ class Tasker
 		}
 
 		if($config !== null) {
-			$this->container->addConfig($config);
+			$this->container->addConfiguration($config);
 		}
 
 		return $this;

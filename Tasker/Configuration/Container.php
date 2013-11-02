@@ -9,9 +9,8 @@ namespace Tasker\Configuration;
 
 use Tasker\InvalidStateException;
 use Tasker\Object;
-use Tasker\Threading\Threading;
 
-class Container extends Object implements ISettings
+class Container extends Object
 {
 
 	/** @var  array */
@@ -24,7 +23,7 @@ class Container extends Object implements ISettings
 	 * @param IConfig $config
 	 * @return $this
 	 */
-	public function addConfig(IConfig $config)
+	public function addConfiguration(IConfig $config)
 	{
 		$this->configs[] = $config;
 		return $this;
@@ -65,73 +64,47 @@ class Container extends Object implements ISettings
 	}
 
 	/**
-	 * @param $name
-	 * @return mixed
-	 */
-	public function getSection($name)
-	{
-		$container = $this->getContainer();
-		if(isset($container[$name])) {
-			return $container[$name];
-		}
-	}
-
-	/**
-	 * @return array|IConfig[]
-	 */
-	public function getConfigs()
-	{
-		return $this->configs;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getRootPath()
-	{
-		return (string) $this->getGlobalConfig('rootPath', getcwd());
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isVerbose()
-	{
-		return (bool) $this->getGlobalConfig('verbose', PHP_SAPI === 'cli');
-	}
-
-	/**
-	 * @return int
-	 * @throws \Tasker\InvalidStateException
-	 */
-	public function getThreadsLimit()
-	{
-		$threadsLimit = (int) $this->getGlobalConfig('threadsLimit', 10);
-		if($threadsLimit > 10000) {
-			throw new InvalidStateException('Treads limit is too high. Set limit smaller then 10000.');
-		}
-
-		return $threadsLimit;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isMultithreading()
-	{
-		return (bool) $this->getGlobalConfig('multithreading', Threading::isAvailable());
-	}
-
-	/**
 	 * @param string $name
 	 * @param null $default
 	 * @return mixed
 	 */
-	protected function getGlobalConfig($name, $default = null)
+	public function getConfig($name, $default = null)
 	{
 		$container = $this->getContainer();
 		if(isset($container[$name])) {
 			return $container[$name];
+		}
+
+		return $default;
+	}
+
+	/**
+	 * @param string $name
+	 * @return array|null
+	 * @throws \Tasker\InvalidStateException
+	 */
+	public function getNamespace($name)
+	{
+		$namespace = $this->getConfig($name, array());
+		if($namespace !== null && !is_array($namespace) && !is_object($namespace)) {
+			throw new InvalidStateException('Configuration for "' . $name . '" must be array.');
+
+		}
+
+		return $namespace;
+	}
+
+	/**
+	 * @param string $namespace
+	 * @param string $configName
+	 * @param null $default
+	 * @return mixed
+	 */
+	public function getConfigInNamespace($namespace, $configName, $default = null)
+	{
+		$namespace = $this->getNamespace($namespace);
+		if(isset($namespace[$configName])) {
+			return $namespace[$configName];
 		}
 
 		return $default;
