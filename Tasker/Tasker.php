@@ -108,7 +108,7 @@ class Tasker
 	public function runTask($name)
 	{
 		$task = $this->tasksContainer->getTask($name);
-		return $task->run($this->container->getConfig($task->getSectionName()));
+		return $task->run($this->container->buildContainer()->lock()->getConfig($task->getSectionName()));
 	}
 
 	/**
