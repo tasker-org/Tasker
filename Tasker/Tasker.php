@@ -8,6 +8,7 @@
 namespace Tasker;
 
 use Tasker\Configs\ArrayConfig;
+use Tasker\Utils\Memory;
 use Tasker\Utils\Timer;
 use Tasker\Configs\JsonConfig;
 use Tasker\Configuration\Container;
@@ -17,6 +18,7 @@ use Tasker\Tasks\CallableTask;
 use Tasker\Tasks\ITask;
 use Tasker\Tasks\ITaskService;
 use Tasker\Threading\ThreadsRunner;
+use Tasker\Utils\Metrics;
 
 class Tasker
 {
@@ -111,7 +113,7 @@ class Tasker
 		}
 
 		$duration = Timer::convert(Timer::d(__METHOD__), Timer::SECONDS);
-		$resultSet->printResult('Tasks completed in ' . $duration . ' s');
+		$resultSet->printResult('Tasks completed in ' . $duration . ' s. Memory usage ' . Metrics::formatBytes(Memory::getUsage()));
 		return $resultSet;
 	}
 
