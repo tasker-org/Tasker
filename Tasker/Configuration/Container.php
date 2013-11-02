@@ -43,27 +43,6 @@ class Container extends Object
 	}
 
 	/**
-	 * @return $this
-	 * @throws \Tasker\InvalidStateException
-	 */
-	public function buildContainer()
-	{
-		if(count($this->configs)) {
-			foreach($this->configs as $config) {
-				$content = $config->loadConfig()->getConfig();
-				if(is_array($content)) {
-					$this->container = array_merge((array) $this->container, $content);
-				}else if($content !== null && !is_array($content)) {
-					throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
-				}
-
-			}
-		}
-
-		return $this;
-	}
-
-	/**
 	 * @param string $name
 	 * @param null $default
 	 * @return mixed
@@ -108,5 +87,25 @@ class Container extends Object
 		}
 
 		return $default;
+	}
+
+
+	/**
+	 * @return void
+	 * @throws \Tasker\InvalidStateException
+	 */
+	protected function buildContainer()
+	{
+		if(count($this->configs)) {
+			foreach($this->configs as $config) {
+				$content = $config->loadConfig()->getConfig();
+				if(is_array($content)) {
+					$this->container = array_merge((array) $this->container, $content);
+				}else if($content !== null && !is_array($content)) {
+					throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
+				}
+
+			}
+		}
 	}
 }
