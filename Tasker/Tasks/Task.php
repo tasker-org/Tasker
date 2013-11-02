@@ -13,9 +13,6 @@ abstract class Task extends Object implements ITask
 {
 
 	/** @var  string */
-	public static $className;
-
-	/** @var  string */
 	protected $name;
 
 	/** @var  string */
@@ -68,11 +65,7 @@ abstract class Task extends Object implements ITask
 	 */
 	public static function getClassName()
 	{
-		if(static::$className === null) {
-			$name = self::getReflection()->getShortName();
-			static::$className = lcfirst(str_replace('Task', '', $name));
-		}
-
-		return static::$className;
+		$name = static::getReflection()->getShortName();
+		return lcfirst(str_replace('Task', '', $name));
 	}
 } 
