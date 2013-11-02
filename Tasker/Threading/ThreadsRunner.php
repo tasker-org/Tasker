@@ -8,13 +8,11 @@
 namespace Tasker\Threading;
 
 use Tasker\Configuration\ISetting;
+use Tasker\IResultSet;
 use Tasker\Output\IWriter;
 use Tasker\Tasks\ITask;
-use Tasker\Utils\Timer;
 use Tasker\Object;
 use Tasker\IRunner;
-use Tasker\TasksContainer;
-use Tasker\ResultSet;
 
 class ThreadsRunner extends Object implements IRunner
 {
@@ -33,12 +31,13 @@ class ThreadsRunner extends Object implements IRunner
 
 	/**
 	 * @param ISetting $setting
+	 * @param IResultSet $resultSet
 	 */
-	function __construct(ISetting $setting)
+	function __construct(ISetting $setting, IResultSet $resultSet)
 	{
 		$this->setting = $setting;
+		$this->resultSet = $resultSet;
 		$this->resultStorage = new ResultStorage($setting->getRootPath());
-		$this->resultSet = new ResultSet($setting->isVerbose());
 	}
 
 	/**
@@ -47,28 +46,18 @@ class ThreadsRunner extends Object implements IRunner
 	 */
 	public function run(array $tasks)
 	{
-		if(count($tasks)) {
-			Timer::d(__METHOD__);
-			$this->resultSet->printResult('Running tasks...');
+		$this->processTasks($tasks);
 
-			$this->processTasks($tasks);
-
-			while(!empty($this->threads)) {
-				foreach($this->threads as $name => $thread) {
-					if(!$thread->isAlive()) {
-						unset($this->threads[$name]);
-						$this->processTaskResult($name);
-					}
+		while(!empty($this->threads)) {
+			foreach($this->threads as $name => $thread) {
+				if(!$thread->isAlive()) {
+					unset($this->threads[$name]);
+					$this->processTaskResult($name);
 				}
-
-				$this->processTasks($tasks);
-				$this->pause();
 			}
 
-			$duration = Timer::convert(Timer::d(__METHOD__), Timer::SECONDS);
-			$this->resultSet->printResult('Tasks completed in ' . $duration . ' s');
-		}else{
-			$this->resultSet->printResult('No tasks for process.');
+			$this->processTasks($tasks);
+			$this->pause();
 		}
 
 		return $this->resultSet;

@@ -10,7 +10,6 @@ namespace Tasker;
 use Tasker\Configuration\ISetting;
 use Tasker\Tasks\ITask;
 use Tasker\Output\IWriter;
-use Tasker\Utils\Timer;
 
 class Runner extends Object implements IRunner
 {
@@ -23,10 +22,12 @@ class Runner extends Object implements IRunner
 
 	/**
 	 * @param ISetting $setting
+	 * @param IResultSet $resultSet
 	 */
-	function __construct(ISetting $setting)
+	function __construct(ISetting $setting, IResultSet $resultSet)
 	{
 		$this->setting = $setting;
+		$this->resultSet = $resultSet;
 	}
 
 	/**
@@ -35,21 +36,12 @@ class Runner extends Object implements IRunner
 	 */
 	public function run(array $tasks)
 	{
-		if(count($tasks)) {
-			Timer::d('process');
-			$this->getResultSet()->printResult('Running tasks...');
-
-			foreach ($tasks as $task) {
-				$this->getResultSet()->addResult('Running task "' . $task->getName() . '"', IWriter::INFO);
-				$this->processTaskResult($task, $this->runTask($task));
-			}
-
-			$this->getResultSet()->printResult('Tasks completed in ' . Timer::convert(Timer::d('process'), Timer::SECONDS) . ' s');
-		}else{
-			$this->getResultSet()->printResult('No tasks for process.');
+		foreach ($tasks as $task) {
+			$this->resultSet->addResult('Running task "' . $task->getName() . '"', IWriter::INFO);
+			$this->processTaskResult($task, $this->runTask($task));
 		}
 
-		return $this->getResultSet();
+		return $this;
 	}
 
 	/**
@@ -59,14 +51,14 @@ class Runner extends Object implements IRunner
 	protected function processTaskResult(ITask $task, $result)
 	{
 		if($result !== null) {
-			$this->getResultSet()->addResult('Task "'. $task->getName() . '" completed with result:', IWriter::INFO);
+			$this->resultSet->addResult('Task "'. $task->getName() . '" completed with result:', IWriter::INFO);
 			if(is_array($result)) {
-				$this->getResultSet()->addResults($result);
+				$this->resultSet->addResults($result);
 			}else{
-				$this->getResultSet()->addResult($result);
+				$this->resultSet->addResult($result);
 			}
 		}else{
-			$this->getResultSet()->addResult('Task "'. $task->getName() . '" completed!', IWriter::SUCCESS);
+			$this->resultSet->addResult('Task "'. $task->getName() . '" completed!', IWriter::SUCCESS);
 		}
 	}
 
@@ -83,17 +75,5 @@ class Runner extends Object implements IRunner
 		}
 
 		return $result;
-	}
-
-	/**
-	 * @return ResultSet
-	 */
-	protected function getResultSet()
-	{
-		if($this->resultSet === null) {
-			$this->resultSet = new ResultSet($this->setting->isVerbose());
-		}
-
-		return $this->resultSet;
 	}
 }

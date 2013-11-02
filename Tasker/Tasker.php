@@ -8,6 +8,7 @@
 namespace Tasker;
 
 use Tasker\Configs\ArrayConfig;
+use Tasker\Utils\Timer;
 use Tasker\Configs\JsonConfig;
 use Tasker\Configuration\Container;
 use Tasker\Configuration\IConfig;
@@ -98,7 +99,20 @@ class Tasker
 	public function run()
 	{
 		$this->container->buildContainer()->lock();
-		return $this->createRunner()->run($this->tasksContainer->getTasks());
+		$resultSet = new ResultSet($this->setting->isVerbose());
+
+		$tasks = $this->tasksContainer->getTasks();
+		Timer::d(__METHOD__);
+		if(count($tasks)) {
+			$resultSet->printResult('Running tasks...');
+			$this->createRunner($resultSet)->run($tasks);
+		}else{
+			$resultSet->printResult('No tasks for process.');
+		}
+
+		$duration = Timer::convert(Timer::d(__METHOD__), Timer::SECONDS);
+		$resultSet->printResult('Tasks completed in ' . $duration . ' s');
+		return $resultSet;
 	}
 
 	/**
@@ -149,22 +163,16 @@ class Tasker
 	}
 
 	/**
+	 * @param IResultSet $resultSet
 	 * @return Runner|ThreadsRunner
-	 * @throws InvalidStateException
 	 */
-	protected function createRunner()
+	protected function createRunner(IResultSet $resultSet)
 	{
 		if(count($this->tasksContainer->getTasks()) > 1 && $this->setting->isMultiThreading()) {
-			$runner = new ThreadsRunner($this->setting);
-		}else{
-			$runner = new Runner($this->setting);
+			return new ThreadsRunner($this->setting, $resultSet);
 		}
 
-		if(!$runner instanceof IRunner) {
-			throw new InvalidStateException('Tasks runner must be instance of Tasker\IRunner.');
-		}
-
-		return $runner;
+		return new Runner($this->setting, $resultSet);
 	}
 
 	/**

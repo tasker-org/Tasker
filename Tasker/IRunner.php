@@ -13,7 +13,7 @@ interface IRunner
 
 	/**
 	 * @param \Tasker\Tasks\ITask[]|array $tasks
-	 * @return IResultSet
+	 * @return IRunner
 	 */
 	public function run(array $tasks);
 } 
