@@ -60,7 +60,7 @@ class Tasker
 	}
 
 	/**
-	 * @param $task
+	 * @param ITask|callable|ITaskService $task
 	 * @param null $name
 	 * @param null $configSection
 	 * @return $this
