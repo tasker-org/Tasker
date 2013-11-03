@@ -1,9 +1,8 @@
-#Tasker
+**Tasker** is simple & powerful task runner written in php
 
-Simple & powerful task runner written in php
-
-##Minimal configuration
+###Minimal configuration
 **Example of usage Tasker with default tasks**
+
 ```php
 
 <?php
