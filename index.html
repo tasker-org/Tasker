@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Tasker by tasker-org</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/tasker-org/Tasker">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/tasker-org/Tasker/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/tasker-org/Tasker/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Tasker</h1>
+          <p>Task runner written in php</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/tasker-org">tasker-org</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="tasker" class="anchor" href="#tasker"><span class="octicon octicon-link"></span></a>Tasker</h1>
+
+<p>Simple &amp; powerful task runner written in php</p>
+
+<h2>
+<a name="minimal-configuration" class="anchor" href="#minimal-configuration"><span class="octicon octicon-link"></span></a>Minimal configuration</h2>
+
+<p><strong>Example of usage Tasker with default tasks</strong></p>
+
+<div class="highlight highlight-php"><pre>
+<span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="nb">define</span><span class="p">(</span><span class="s1">'ROOT'</span><span class="p">,</span> <span class="nb">realpath</span><span class="p">(</span><span class="nx">__DIR__</span> <span class="o">.</span> <span class="s1">'/..'</span><span class="p">));</span>
+
+<span class="k">require</span> <span class="nx">ROOT</span> <span class="o">.</span> <span class="s1">'/libs-dev/autoload.php'</span><span class="p">;</span>
+
+<span class="nv">$tasker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Tasker\Tasker</span><span class="p">;</span>
+<span class="nv">$tasker</span><span class="o">-&gt;</span><span class="na">addConfig</span><span class="p">(</span><span class="nx">ROOT</span> <span class="o">.</span> <span class="s1">'/config/files.json'</span><span class="p">)</span>
+    <span class="c1">//-&gt;addConfig(array('rootPath' =&gt; ROOT))</span>
+    <span class="o">-&gt;</span><span class="na">registerTask</span><span class="p">(</span><span class="k">new</span> <span class="nx">\Tasker\Copy\CopyFilesTask</span><span class="p">(),</span> <span class="s1">'copy'</span><span class="p">)</span>
+    <span class="o">-&gt;</span><span class="na">registerTask</span><span class="p">(</span><span class="k">new</span> <span class="nx">\Tasker\Concat\ConcatFilesTask</span><span class="p">(),</span> <span class="s1">'js'</span><span class="p">);</span>
+<span class="nv">$tasker</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+
+</pre></div>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-8662827-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
