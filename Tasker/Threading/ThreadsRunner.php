@@ -37,7 +37,7 @@ class ThreadsRunner extends Object implements IRunner
 	{
 		$this->setting = $setting;
 		$this->resultSet = $resultSet;
-		$this->resultStorage = new ResultStorage($setting->getRootPath());
+		$this->resultStorage = new ResultStorage($setting->getThreadsResultStorage());
 	}
 
 	/**
@@ -70,7 +70,10 @@ class ThreadsRunner extends Object implements IRunner
 	{
 		try {
 			$result = $task->run($this->setting->getContainer()->getConfig($task->getSectionName()));
-			$this->resultStorage->writeSuccess($task->getName(), $result);
+
+			if($result !== null) {
+				$this->resultStorage->writeSuccess($task->getName(), $result);
+			}
 		}catch (\Exception $ex) {
 			$this->resultStorage->writeError($task->getName(), $ex->getMessage());
 		}

@@ -26,6 +26,14 @@ class Setting extends Object implements ISetting
 	}
 
 	/**
+	 * @return Container
+	 */
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getRootPath()
@@ -78,10 +86,11 @@ class Setting extends Object implements ISetting
 	}
 
 	/**
-	 * @return Container
+	 * @return string
 	 */
-	public function getContainer()
+	public function getThreadsResultStorage()
 	{
-		return $this->container;
+		$default = $this->getRootPath() . '/temp/results';
+		return (string) $this->container->getConfigInNamespace(self::MULTITHREADING, 'storage', $default);
 	}
 }

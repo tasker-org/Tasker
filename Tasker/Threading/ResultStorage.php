@@ -15,16 +15,18 @@ use Tasker\Output\Dumper;
 class ResultStorage extends Object
 {
 
-	/** @var string  */
-	private $rootPath;
+	/** @var  string */
+	private $storage;
 
 	/**
-	 * @param $rootPath
+	 * @param $storage
 	 */
-	function __construct($rootPath)
+	function __construct($storage)
 	{
-		$this->rootPath = (string) $rootPath;
+		$this->storage = (string) $storage;
+		FileSystem::cleanDir($this->storage, false);
 	}
+
 
 	/**
 	 * @param $taskName
@@ -54,7 +56,7 @@ class ResultStorage extends Object
 	 */
 	public function read($taskName)
 	{
-		if(file_exists($file = $this->getFileName($taskName))) {
+		if(file_exists($file = $this->getFilePath($taskName))) {
 			$content = FileSystem::read($file);
 			return eval('return ' . $content . ';');
 		}
@@ -71,15 +73,15 @@ class ResultStorage extends Object
 	protected function write($taskName, $result, $type)
 	{
 		$result = array($type, $result);
-		return FileSystem::write($this->getFileName($taskName), Dumper::toLine($result));
+		return FileSystem::write($this->getFilePath($taskName), Dumper::toLine($result));
 	}
 
 	/**
 	 * @param $taskName
 	 * @return string
 	 */
-	protected function getFileName($taskName)
+	protected function getFilePath($taskName)
 	{
-		return $this->rootPath . '/temp/results/task-' . $taskName . '.txt';
+		return $this->storage . '/task-' . (string) $taskName . '.txt';
 	}
 } 

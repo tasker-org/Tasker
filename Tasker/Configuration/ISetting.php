@@ -14,6 +14,12 @@ interface ISetting
 
 	const MULTITHREADING = 'multithreading';
 
+
+	/**
+	 * @return Container
+	 */
+	public function getContainer();
+
 	/**
 	 * @return string
 	 */
@@ -35,13 +41,13 @@ interface ISetting
 	public function isMultiThreading();
 
 	/**
+	 * @return string
+	 */
+	public function getThreadsResultStorage();
+
+	/**
 	 * @return int
 	 */
 	public function getThreadsSleepTime();
-
-	/**
-	 * @return Container
-	 */
-	public function getContainer();
 
 } 
