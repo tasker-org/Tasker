@@ -14,7 +14,7 @@ class Colors
 {
 
 	/** @var array  */
-	private static $bgColors = array(
+	private $bgColors = array(
 		'red' => '41',
 		'green' => '42',
 		'blue' => '44'
@@ -25,7 +25,7 @@ class Colors
 	 * @param $type
 	 * @return string
 	 */
-	public static function getColored($message, $type = IWriter::NONE)
+	public function getColored($message, $type = IWriter::NONE)
 	{
 		if($type != IWriter::NONE && Environment::isUnix()) {
 			$pattern = "\033[__!COLOR__m__!MESSAGE__\033[0m";
@@ -40,12 +40,12 @@ class Colors
 	 * @return mixed
 	 * @throws \Tasker\ErrorException
 	 */
-	private static function getColor($type)
+	private function getColor($type)
 	{
-		if(!isset(static::$bgColors[$type])) {
+		if(!isset($this->bgColors[$type])) {
 			throw new ErrorException('Unsupported color "' . $type . '"');
 		}
 
-		return static::$bgColors[$type];
+		return $this->bgColors[$type];
 	}
 }

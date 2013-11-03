@@ -13,13 +13,21 @@ use Tasker\InfoException;
 class Writer implements IWriter
 {
 
+	/** @var  Colors */
+	private $colors;
+
+	function __construct()
+	{
+		$this->colors = new Colors();
+	}
+
 	/**
 	 * @param $message
 	 * @param string $type
 	 */
 	public function write($message, $type = self::SUCCESS)
 	{
-		echo Colors::getColored(Dumper::toLine($message), $type);
+		echo $this->colors->getColored(Dumper::toLine($message), $type);
 	}
 
 	/**
