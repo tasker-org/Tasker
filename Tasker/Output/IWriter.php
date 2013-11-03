@@ -22,24 +22,24 @@ interface IWriter
 	 * @param string $type
 	 * @return void
 	 */
-	public static function write($message, $type = self::SUCCESS);
+	public function write($message, $type = self::SUCCESS);
 
 	/**
 	 * @param string $message
 	 * @param string $type
 	 * @return void
 	 */
-	public static function writeLn($message, $type = self::SUCCESS);
+	public function writeLn($message, $type = self::SUCCESS);
 
 	/**
 	 * @param \Exception $ex
 	 * @return void
 	 */
-	public static function writeException(\Exception $ex);
+	public function writeException(\Exception $ex);
 
 	/**
 	 * @param $vars
 	 * @return void
 	 */
-	public static function dump();
+	public function dump();
 }

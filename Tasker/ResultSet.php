@@ -14,10 +14,13 @@ class ResultSet implements IResultSet
 {
 
 	/** @var bool  */
-	public $verbose;
+	private $verbose;
 
 	/** @var array  */
 	private $results = array();
+
+	/** @var \Tasker\Output\Writer  */
+	private $writer;
 
 	/**
 	 * @param $verboseMode
@@ -25,6 +28,7 @@ class ResultSet implements IResultSet
 	function __construct($verboseMode)
 	{
 		$this->verbose = (bool) $verboseMode;
+		$this->writer = new Writer;
 	}
 
 	/**
@@ -70,9 +74,9 @@ class ResultSet implements IResultSet
 	public function printResult($message, $type = IWriter::NONE)
 	{
 		if($message instanceof \Exception) {
-			Writer::writeException($message);
+			$this->writer->writeException($message);
 		}else{
-			Writer::writeLn($message, $type);
+			$this->writer->writeLn($message, $type);
 		}
 
 		return $this;

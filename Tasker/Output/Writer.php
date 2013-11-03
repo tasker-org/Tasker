@@ -17,7 +17,7 @@ class Writer implements IWriter
 	 * @param $message
 	 * @param string $type
 	 */
-	public static function write($message, $type = self::SUCCESS)
+	public function write($message, $type = self::SUCCESS)
 	{
 		echo Colors::getColored(Dumper::toLine($message), $type);
 	}
@@ -26,7 +26,7 @@ class Writer implements IWriter
 	 * @param $message
 	 * @param string $type
 	 */
-	public static function writeLn($message, $type = self::SUCCESS)
+	public function writeLn($message, $type = self::SUCCESS)
 	{
 		static::write($message, $type);
 		echo PHP_EOL;
@@ -35,7 +35,7 @@ class Writer implements IWriter
 	/**
 	 * @param \Exception $ex
 	 */
-	public static function writeException(\Exception $ex)
+	public function writeException(\Exception $ex)
 	{
 		if($ex instanceof InfoException) {
 			static::writeLn($ex->getMessage(), self::INFO);
@@ -52,7 +52,7 @@ class Writer implements IWriter
 	/**
 	 * @return void
 	 */
-	public static function dump()
+	public function dump()
 	{
 		foreach(func_get_args() as $var) {
 			Dumper::toLine($var);
