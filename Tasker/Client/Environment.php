@@ -21,6 +21,14 @@ class Environment extends Object
 	}
 
 	/**
+	 * @return bool
+	 */
+	public static function isConsole()
+	{
+		return PHP_SAPI === 'cli';
+	}
+
+	/**
 	 * Checks if threading is supported by the current
 	 * PHP configuration
 	 *

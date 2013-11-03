@@ -38,7 +38,7 @@ class Setting extends Object implements ISetting
 	 */
 	public function isVerbose()
 	{
-		return (bool) $this->container->getConfig('verbose', PHP_SAPI === 'cli');
+		return (bool) $this->container->getConfig('verbose', Environment::isConsole());
 	}
 
 	/**
