@@ -8,6 +8,7 @@
 namespace Tasker;
 
 use Tasker\Configs\ArrayConfig;
+use Tasker\Configs\PhpConfig;
 use Tasker\Utils\Memory;
 use Tasker\Utils\Timer;
 use Tasker\Configs\JsonConfig;
@@ -141,6 +142,9 @@ class Tasker
 		switch ($this->getFileExtension($path)) {
 			case JsonConfig::EXTENSION:
 				$config = new JsonConfig($path);
+				break;
+			case PhpConfig::EXTENSION:
+				$config = new PhpConfig($path);
 				break;
 			default:
 				$config = null;
