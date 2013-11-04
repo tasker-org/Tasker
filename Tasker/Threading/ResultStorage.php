@@ -73,7 +73,7 @@ class ResultStorage extends Object
 	protected function write($taskName, $result, $type)
 	{
 		$result = array($type, $result);
-		return FileSystem::write($this->getFilePath($taskName), Dumper::toLine($result));
+		return FileSystem::write($this->getFilePath($taskName), var_export($result, true));
 	}
 
 	/**
