@@ -46,7 +46,12 @@ class ResultSet implements IResultSet
 	public function addResults(array $results)
 	{
 		foreach ($results as $type => $result) {
-			$this->addResult($result, $type);
+			if(is_string($type)) {
+				$this->addResult($result, $type);
+			}else{
+				$this->addResult($result);
+			}
+
 		}
 
 		return $this;
