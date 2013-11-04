@@ -10,7 +10,6 @@ namespace Tasker\Threading;
 use Tasker\Object;
 use Tasker\Output\IWriter;
 use Tasker\Utils\FileSystem;
-use Tasker\Output\Dumper;
 
 class ResultStorage extends Object
 {
