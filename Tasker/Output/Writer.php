@@ -27,7 +27,7 @@ class Writer implements IWriter
 	 */
 	public function write($message, $type = self::SUCCESS)
 	{
-		echo $this->colors->getColored(Dumper::toLine($message), $type);
+		echo $this->colors->getColored(trim(var_export($message, true), "'"), $type);
 	}
 
 	/**
