@@ -7,6 +7,7 @@
  */
 namespace Tasker\Configuration;
 
+use Tasker\ArrayHash;
 use Tasker\InvalidStateException;
 use Tasker\Object;
 
@@ -121,13 +122,12 @@ class Container extends Object
 
 		foreach($this->configs as $config) {
 			$content = $config->loadConfig()->getConfig();
-			if(is_array($content)) {
+			if(is_array($content) || is_object($content)) {
 				$this->container = array_merge((array) $this->container, $content);
-			}else if($content !== null && !is_array($content)) {
-				throw new InvalidStateException('Config must be array, ' . gettype($content) . ' given.');
 			}
-
 		}
+
+		$this->container = ArrayHash::from($this->container);
 
 		return $this;
 	}
