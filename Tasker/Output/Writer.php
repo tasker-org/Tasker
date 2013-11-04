@@ -56,16 +56,4 @@ class Writer implements IWriter
 			}
 		}
 	}
-
-	/**
-	 * @return void
-	 */
-	public function dump()
-	{
-		foreach(func_get_args() as $var) {
-			Dumper::toLine($var);
-		}
-
-		exit;
-	}
 }

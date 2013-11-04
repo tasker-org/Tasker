@@ -36,10 +36,4 @@ interface IWriter
 	 * @return void
 	 */
 	public function writeException(\Exception $ex);
-
-	/**
-	 * @param $vars
-	 * @return void
-	 */
-	public function dump();
 }
