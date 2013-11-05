@@ -127,8 +127,7 @@ class Container extends Object
 			}
 		}
 
-		$this->container = ArrayHash::from($this->container);
-
+		$this->container = ArrayHash::from((array) $this->container);
 		return $this;
 	}
 }
