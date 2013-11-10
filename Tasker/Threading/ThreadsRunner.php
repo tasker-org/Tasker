@@ -13,6 +13,7 @@ use Tasker\Output\IWriter;
 use Tasker\Tasks\ITask;
 use Tasker\Object;
 use Tasker\IRunner;
+use Tasker\Utils\Randomizer;
 
 class ThreadsRunner extends Object implements IRunner
 {
@@ -23,7 +24,7 @@ class ThreadsRunner extends Object implements IRunner
 	/** @var \Tasker\ResultSet  */
 	private $resultSet;
 
-	/** @var array|Thread[] */
+	/** @var array */
 	private $threads = array();
 
 	/** @var \Tasker\Threading\ResultStorage  */
@@ -49,10 +50,12 @@ class ThreadsRunner extends Object implements IRunner
 		$this->processTasks($tasks);
 
 		while(!empty($this->threads)) {
-			foreach($this->threads as $name => $thread) {
+			foreach($this->threads as $storage => $item) {
+				list($thread, $task) = $item;
+
 				if(!$thread->isAlive()) {
-					unset($this->threads[$name]);
-					$this->processTaskResult($name);
+					unset($this->threads[$storage]);
+					$this->processTaskResult($task, $storage);
 				}
 			}
 
@@ -65,17 +68,18 @@ class ThreadsRunner extends Object implements IRunner
 
 	/**
 	 * @param ITask $task
+	 * @param string $storage
 	 */
-	public function runTask(ITask $task)
+	public function runTask(ITask $task, $storage)
 	{
 		try {
 			$result = $task->run($this->setting->getContainer()->getConfig($task->getSectionName()));
 
 			if($result !== null) {
-				$this->resultStorage->writeSuccess($task->getName(), $result);
+				$this->resultStorage->writeSuccess($storage, $result);
 			}
 		}catch (\Exception $ex) {
-			$this->resultStorage->writeError($task->getName(), $ex->getMessage());
+			$this->resultStorage->writeError($storage, $ex->getMessage());
 		}
 	}
 
@@ -105,8 +109,9 @@ class ThreadsRunner extends Object implements IRunner
 	{
 		$this->resultSet->addResult('Running task "' . $task->getName() . '"', IWriter::INFO);
 		$thread = new Thread(array($this, 'runTask'));
-		$thread->start($task);
-		$this->threads[$task->getName()] = $thread;
+		$storage = $this->createStorageName($task->getName());
+		$thread->start($task, $storage);
+		$this->threads[$storage] = array($thread, $task);
 	}
 
 	/**
@@ -120,20 +125,30 @@ class ThreadsRunner extends Object implements IRunner
 	}
 
 	/**
-	 * @param $taskName
+	 * @param ITask $task
+	 * @param string $storage
 	 */
-	private function processTaskResult($taskName)
+	private function processTaskResult(ITask $task, $storage)
 	{
-		$result = $this->resultStorage->read($taskName);
+		$result = $this->resultStorage->read($storage);
 		if($result[1] !== null) {
-			$this->resultSet->addResult('Task "'. $taskName . '" completed with result:', IWriter::INFO);
+			$this->resultSet->addResult('Task "'. $task->getName() . '" completed with result:', IWriter::INFO);
 			if(is_array($result[1])) {
 				$this->resultSet->addResults($result[1]);
 			}else{
 				$this->resultSet->addResult($result[1], $result[0]);
 			}
 		}else{
-			$this->resultSet->addResult('Task "'. $taskName . '" completed!', IWriter::SUCCESS);
+			$this->resultSet->addResult('Task "'. $task->getName() . '" completed!', IWriter::SUCCESS);
 		}
+	}
+
+	/**
+	 * @param $taskName
+	 * @return string
+	 */
+	private function createStorageName($taskName)
+	{
+		return $taskName . '-' . Randomizer::generate(5);
 	}
 }
