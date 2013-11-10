@@ -21,7 +21,7 @@ $tasker->run();
 ```
 
 ##Available settings
-*example of settings from file **ROOT . '/config/tasker.json'***
+*example of settings from file ROOT . '/config/tasker.json'*
 
 ```json
 	{
