@@ -1,5 +1,7 @@
 **Tasker** is simple & powerful task runner written in php
 
+**With support of "multi threading"** - make your tasks done very fast.
+
 ###Minimal configuration
 **Example of usage Tasker with default tasks**
 
