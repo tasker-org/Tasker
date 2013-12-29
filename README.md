@@ -41,7 +41,9 @@ $tasker->run();
 ```
 
 **Details:**
+```
 multithreading[sleep]: value in seconds, make CPU to do it
-multithreading[storage]: //for storing results in diferrent threads
+multithreading[storage]: for storing results in diferrent threads
 rootPath: default is *getcwd()*
 verbose: if you are runnig script from console, value is set to TRUE
+```
