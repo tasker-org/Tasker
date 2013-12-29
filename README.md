@@ -31,11 +31,17 @@ $tasker->run();
 	{
 	  "multithreading": {
 	    "allow": true,
-	    "limit": 10, //threads limit
-	    "sleep": 1, //in seconds, make CPU to do it
-	    "storage": "temp/results" //for storing results in diferrent threads
+	    "limit": 10,
+	    "sleep": 1,
+	    "storage": "temp/results"
 	  },
-	  "rootPath": "/path/to/your/repository", //default: getcwd()
-	  "verbose": "false", //if you are runnig script from console, value is set to TRUE
+	  "rootPath": "/path/to/your/repository",
+	  "verbose": "false",
 	}
 ```
+
+**Details:**
+multithreading[sleep]: value in seconds, make CPU to do it
+multithreading[storage]: //for storing results in diferrent threads
+rootPath: default is *getcwd()*
+verbose: if you are runnig script from console, value is set to TRUE
