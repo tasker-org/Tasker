@@ -2,6 +2,8 @@
 
 **With support of "multi threading"** - make your tasks done very fast.
 
+![Tasker](http://tasker.jsifalda.name/screens/tasker.png "Terminal")
+
 ###Minimal configuration
 **Example of usage Tasker with default tasks**
 
